@@ -22,6 +22,10 @@ API contract source:
 - Next.js (App Router, TypeScript)
 - shadcn/ui components for all UI controls
 - `react-hook-form` for all forms
+- `zod` + `@hookform/resolvers` for form validation
+- `@tanstack/react-query` for server state
+- `zustand` for client app state
+- `next-intl` for i18n
 - Use reusable typed API client layer (no direct fetch in page components)
 - Keep code clean, modular, and feature-based
 
@@ -38,13 +42,14 @@ API contract source:
 Create `.env.local`:
 - `NEXT_PUBLIC_API_BASE_URL=http://localhost:4000/api/v1`
 
-## Recommended Packages
-Install if missing:
+## Required Packages
+Install and use:
 - `react-hook-form`
 - `@hookform/resolvers`
 - `zod`
 - `@tanstack/react-query`
-- `next-intl` (or equivalent i18n solution)
+- `next-intl`
+- `zustand`
 
 ## High-Level Architecture
 Use this structure (or equivalent clean variant):
@@ -153,7 +158,8 @@ Use `react-hook-form` + schema validation for:
   - locale header injection (`Accept-Language`)
   - normalized error mapping
 - Separate endpoint functions per module (`auth`, `training`).
-- Use query/mutation hooks (preferred with React Query).
+- Use query/mutation hooks with `@tanstack/react-query`.
+- Use `zustand` for auth/session UI state and cross-page client state.
 - Invalidate/refetch relevant queries after mutations.
 
 ## Pages To Build (Minimum)
@@ -174,6 +180,7 @@ Use `react-hook-form` + schema validation for:
 - Training CRUD works end-to-end with backend.
 - Translation behavior works through `Accept-Language`.
 - All forms implemented with `react-hook-form`.
+- `@tanstack/react-query`, `zod`, `next-intl`, `@hookform/resolvers`, `react-hook-form`, and `zustand` are used in the implementation.
 - No registration page exists.
 - No usage of finance/groceries endpoints.
 
@@ -182,6 +189,13 @@ If you discover mismatch between runtime behavior and `backend/api/http/app.yaml
 - Prefer backend runtime behavior.
 - Document mismatch in a short `KNOWN_GAPS.md`.
 - Keep frontend robust with defensive error handling.
+
+## Skill Usage
+Always apply local skills for this project:
+- `.agents/skills/next-best-practices`
+- `.agents/skills/shadcn`
+
+When building pages, routes, forms, and UI components, prioritize these skills before generating code.
 
 ## Future Instructions
 More instructions may be appended below by the project owner. Always treat newer instructions as higher priority when they do not violate the scope above.
