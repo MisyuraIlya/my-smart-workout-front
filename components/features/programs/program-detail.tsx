@@ -11,6 +11,7 @@ import type { Workout, WorkoutExercise } from '@/lib/api/workout'
 import { WorkoutForm } from './workout-form'
 import { WorkoutExerciseForm } from './workout-exercise-form'
 import { ProgramForm } from './program-form'
+import { WorkoutExerciseItem } from './workout-exercise-item'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -108,23 +109,11 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
       {exercises.length > 0 && (
         <div className="flex flex-col gap-1">
           {exercises.map((we: WorkoutExercise) => (
-            <div key={we.id} className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2 text-sm">
-              <span>{we.exercise?.name ?? we.exercise_id}</span>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <span>{we.sets}×{we.target_reps}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-6"
-                  onClick={() =>
-                    deleteWE.mutate({ id: we.id, workout_id: workout.id })
-                  }
-                >
-                  <Trash2Icon className="size-3" />
-                  <span className="sr-only">{tc('remove')}</span>
-                </Button>
-              </div>
-            </div>
+            <WorkoutExerciseItem
+              key={we.id}
+              we={we}
+              onDelete={(id, workoutId) => deleteWE.mutate({ id, workout_id: workoutId })}
+            />
           ))}
         </div>
       )}

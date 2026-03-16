@@ -57,10 +57,29 @@ export function workoutApiFetch<T>(
   return apiFetch<T>(WORKOUT_API_URL, path, locale, init)
 }
 
-export function authApiFetch<T>(
+export async function authApiFetch<T>(
   path: string,
   locale: string,
   init?: RequestInit,
 ): Promise<T> {
-  return apiFetch<T>(AUTH_API_URL, path, locale, init)
+  const res = await fetch(`${AUTH_API_URL}${path}`, {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept-Language': locale,
+      ...init?.headers,
+    },
+  })
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(
+      (body as { error?: string; message?: string }).error ??
+        (body as { error?: string; message?: string }).message ??
+        'API error',
+    )
+  }
+
+  if (res.status === 204) return undefined as T
+  return res.json() as Promise<T>
 }

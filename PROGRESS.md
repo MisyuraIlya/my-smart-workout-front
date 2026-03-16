@@ -97,6 +97,15 @@
 
 ---
 
+- [x] Extract list item card components — each `map()` in a list now renders a dedicated card component
+  - `components/features/exercises/exercise-card.tsx` — `ExerciseCard` (image, difficulty badge, edit drawer, delete dialog)
+  - `components/features/muscles/muscle-card.tsx` — `MuscleCard` (name, edit drawer, delete dialog)
+  - `components/features/programs/program-card.tsx` — `ProgramCard` (status/category badges, schedule button, delete dialog)
+  - `components/features/sessions/session-card.tsx` — `SessionCard` (status badge, date, workout name, link to detail)
+  - `components/features/programs/workout-exercise-item.tsx` — `WorkoutExerciseItem` (exercise name, sets×reps, inline delete)
+  - `components/features/sessions/session-set-row.tsx` — `SessionSetRow` (set number, weight/reps/RPE, done badge)
+  - Updated: `exercise-list`, `muscle-list`, `program-list`, `session-list`, `program-detail`, `session-detail`
+
 ## In Progress
 
 - [x] Add Exercises tab to bottom navigation bar
