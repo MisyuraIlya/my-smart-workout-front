@@ -10,11 +10,14 @@
     },
     "postgres": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-postgres",
-        "${POSTGRES_CONNECTION_STRING}"
-      ]
+      "args": ["-y", "mcp-postgres-server"],
+      "env": {
+        "PG_HOST": "localhost",
+        "PG_PORT": "5433",
+        "PG_USER": "smarthome",
+        "PG_PASSWORD": "smarthome_password",
+        "PG_DATABASE": "workout"
+      }
     },
     "playwright": {
       "command": "npx",
