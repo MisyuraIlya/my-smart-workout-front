@@ -100,7 +100,7 @@ export function TrainView() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-0.5">
           <h1 className="text-2xl font-bold font-mono">{formatElapsed(elapsedSeconds)}</h1>
@@ -120,8 +120,8 @@ export function TrainView() {
           ))}
         </div>
       ) : (
-        <ScrollArea className="h-[calc(100vh-16rem)]">
-          <div className="flex flex-col gap-6 pb-4">
+        <ScrollArea className="flex-1 min-h-0">
+          <div className="flex flex-col gap-6 pb-28">
             {Object.entries(grouped).map(([exerciseId, group]) => (
               <div key={exerciseId} className="flex flex-col gap-2">
                 <h3 className="font-semibold">{group.name}</h3>
