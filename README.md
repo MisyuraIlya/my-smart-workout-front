@@ -22,8 +22,8 @@ import { Button } from "@/components/ui/button";
 
 start promt
 `
-Read CLAUDE.md and PROGRESS.md, then continue building the app.
-Start with the next uncompleted task in PROGRESS.md.
-When done with a task, mark it as done in PROGRESS.md before moving to the next one.
+Read my-smart-workout-front/CLAUDE.md and my-smart-workout-front/PROGRESS.md, then continue building the app.
+Start with the next uncompleted task in my-smart-workout-front/PROGRESS.md.
+When done with a task, mark it as done in my-smart-workout-front/PROGRESS.md before moving to the next one.
 `
 
