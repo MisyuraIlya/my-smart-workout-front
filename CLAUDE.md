@@ -110,12 +110,12 @@ src/
 
 **Scope: Login only. No registration UI.**
 
-Auth service base URL: `http://localhost:8080`
+Auth service base URL: `http://localhost:4000/api/v1`
 
 ### Login endpoint
 
 ```
-POST /api/v1/profile/auth/login
+POST /profile/auth/login
 Content-Type: application/json
 Accept-Language: <locale>
 
@@ -153,8 +153,8 @@ File: `src/lib/api/client.ts`
 - Every request must send `Accept-Language: <current next-intl locale>` (en | ru | he).
 - Every protected request must send `Authorization: Bearer <token>` from auth store.
 - On `401` response anywhere: call `clearAuth()` and `router.replace('/login')`.
-- Workout service base URL: `http://localhost:8080/api/v1` (env var `NEXT_PUBLIC_WORKOUT_API_URL`).
-- Auth service base URL: `http://localhost:8080` (env var `NEXT_PUBLIC_AUTH_API_URL`).
+- Workout service base URL: `http://localhost:4001/api/v1` (env var `NEXT_PUBLIC_WORKOUT_API_URL`).
+- Auth service base URL: `http://localhost:4000/api/v1` (env var `NEXT_PUBLIC_AUTH_API_URL`).
 
 ```ts
 // Pattern for every API function
