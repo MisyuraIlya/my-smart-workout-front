@@ -1,0 +1,179 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "loading": "Loading...",
+    "empty": "Nothing here yet",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "back": "Back",
+    "close": "Close",
+    "confirm": "Confirm",
+    "add": "Add",
+    "remove": "Remove",
+    "search": "Search",
+    "noResults": "No results found"
+  },
+  "auth": {
+    "login": "Log in",
+    "loginTitle": "Welcome back",
+    "loginDescription": "Enter your credentials to continue",
+    "phone": "Phone",
+    "phonePlaceholder": "+1 555 000 0000",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "invalidCredentials": "Invalid phone or password",
+    "loggingIn": "Logging in..."
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "programs": "Programs",
+    "exercises": "Exercises",
+    "muscles": "Muscles",
+    "sessions": "Sessions",
+    "statistics": "Statistics",
+    "train": "Train"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "startTrain": "Start Training",
+    "finishTrain": "Finish Training",
+    "noSession": "No session planned for today",
+    "sessionComplete": "Session complete!",
+    "upcomingSessions": "Upcoming Sessions",
+    "noUpcomingSessions": "No upcoming sessions"
+  },
+  "programs": {
+    "title": "Programs",
+    "create": "Create Program",
+    "edit": "Edit Program",
+    "empty": "No programs yet",
+    "emptyDescription": "Create your first training program",
+    "name": "Name",
+    "namePlaceholder": "e.g. Strength 12 weeks",
+    "status": {
+      "label": "Status",
+      "unknown": "Unknown",
+      "active": "Active",
+      "done": "Done",
+      "canceled": "Canceled",
+      "inactive": "Inactive"
+    },
+    "category": {
+      "label": "Category",
+      "strength": "Strength",
+      "mass": "Mass",
+      "cardio": "Cardio"
+    },
+    "startsOn": "Starts On",
+    "endsOn": "Ends On",
+    "generateSchedule": "Generate Schedule",
+    "scheduleGenerated": "{sessions} sessions, {sets} sets created",
+    "workouts": "Workouts",
+    "addWorkout": "Add Workout"
+  },
+  "workouts": {
+    "title": "Workouts",
+    "create": "Add Workout",
+    "edit": "Edit Workout",
+    "name": "Name",
+    "namePlaceholder": "e.g. Chest Day",
+    "dayNo": "Day",
+    "days": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
+    },
+    "exercises": "Exercises",
+    "addExercise": "Add Exercise"
+  },
+  "exercises": {
+    "title": "Exercises",
+    "create": "Create Exercise",
+    "edit": "Edit Exercise",
+    "empty": "No exercises yet",
+    "emptyDescription": "Add exercises to your library",
+    "name": "Name",
+    "namePlaceholder": "e.g. Bench Press",
+    "description": "Description",
+    "instructions": "Instructions",
+    "muscle": "Muscle Group",
+    "difficulty": {
+      "label": "Difficulty",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "sets": "Sets",
+    "targetReps": "Target Reps",
+    "restSeconds": "Rest (seconds)",
+    "position": "Position"
+  },
+  "muscles": {
+    "title": "Muscle Groups",
+    "create": "Add Muscle",
+    "edit": "Edit Muscle",
+    "empty": "No muscle groups yet",
+    "emptyDescription": "Add muscle groups to categorize exercises",
+    "name": "Name",
+    "namePlaceholder": "e.g. Chest"
+  },
+  "sessions": {
+    "title": "Sessions",
+    "empty": "No sessions yet",
+    "emptyDescription": "Complete a workout to see your history",
+    "status": {
+      "label": "Status",
+      "planned": "Planned",
+      "in_progress": "In Progress",
+      "done": "Done",
+      "skipped": "Skipped"
+    },
+    "scheduledOn": "Scheduled",
+    "startedAt": "Started",
+    "endedAt": "Finished",
+    "notes": "Notes",
+    "sets": "Sets"
+  },
+  "train": {
+    "title": "Training",
+    "setsProgress": "{done} / {total} sets done",
+    "finish": "Finish Training",
+    "weight": "Weight (kg)",
+    "reps": "Reps",
+    "rpe": "RPE",
+    "notes": "Notes",
+    "done": "Done",
+    "targetReps": "Target: {reps} reps"
+  },
+  "statistics": {
+    "title": "Statistics",
+    "trainingHours": "Training Hours",
+    "totalHours": "Total Hours",
+    "totalSessions": "Total Sessions",
+    "exerciseProgress": "Exercise Progress",
+    "programProgress": "Program Progress",
+    "totalSets": "Total Sets",
+    "totalReps": "Total Reps",
+    "totalVolume": "Total Volume",
+    "bestWeight": "Best Weight",
+    "daysRemaining": "{days} days remaining",
+    "workoutCompletion": "{percent}% completed",
+    "noActiveProgram": "No active program",
+    "noActiveProgramDescription": "Create and activate a program to track progress"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "notFoundDescription": "The page you are looking for does not exist.",
+    "goHome": "Go to Dashboard",
+    "somethingWentWrong": "Something went wrong",
+    "tryAgain": "Try again"
+  }
+}

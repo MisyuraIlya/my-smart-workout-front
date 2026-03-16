@@ -1,0 +1,179 @@
+{
+  "common": {
+    "save": "שמור",
+    "cancel": "ביטול",
+    "delete": "מחק",
+    "edit": "ערוך",
+    "create": "צור",
+    "loading": "טוען...",
+    "empty": "אין כלום כאן עדיין",
+    "error": "משהו השתבש",
+    "retry": "נסה שנית",
+    "back": "חזרה",
+    "close": "סגור",
+    "confirm": "אשר",
+    "add": "הוסף",
+    "remove": "הסר",
+    "search": "חיפוש",
+    "noResults": "לא נמצאו תוצאות"
+  },
+  "auth": {
+    "login": "התחבר",
+    "loginTitle": "ברוך שובך",
+    "loginDescription": "הזן את פרטי הכניסה שלך להמשך",
+    "phone": "טלפון",
+    "phonePlaceholder": "+972 50 000 0000",
+    "password": "סיסמה",
+    "passwordPlaceholder": "••••••••",
+    "invalidCredentials": "טלפון או סיסמה שגויים",
+    "loggingIn": "מתחבר..."
+  },
+  "nav": {
+    "dashboard": "ראשי",
+    "programs": "תוכניות",
+    "exercises": "תרגילים",
+    "muscles": "שרירים",
+    "sessions": "אימונים",
+    "statistics": "סטטיסטיקה",
+    "train": "אמן"
+  },
+  "dashboard": {
+    "title": "ראשי",
+    "startTrain": "התחל אימון",
+    "finishTrain": "סיים אימון",
+    "noSession": "אין אימון מתוכנן להיום",
+    "sessionComplete": "האימון הושלם!",
+    "upcomingSessions": "אימונים קרובים",
+    "noUpcomingSessions": "אין אימונים קרובים"
+  },
+  "programs": {
+    "title": "תוכניות",
+    "create": "צור תוכנית",
+    "edit": "ערוך תוכנית",
+    "empty": "אין תוכניות עדיין",
+    "emptyDescription": "צור את תוכנית האימונים הראשונה שלך",
+    "name": "שם",
+    "namePlaceholder": "לדוג' כוח 12 שבועות",
+    "status": {
+      "label": "סטטוס",
+      "unknown": "לא ידוע",
+      "active": "פעיל",
+      "done": "הושלם",
+      "canceled": "בוטל",
+      "inactive": "לא פעיל"
+    },
+    "category": {
+      "label": "קטגוריה",
+      "strength": "כוח",
+      "mass": "מסה",
+      "cardio": "קרדיו"
+    },
+    "startsOn": "תאריך התחלה",
+    "endsOn": "תאריך סיום",
+    "generateSchedule": "צור לוח זמנים",
+    "scheduleGenerated": "נוצרו {sessions} סשנים, {sets} סטים",
+    "workouts": "אימונים",
+    "addWorkout": "הוסף אימון"
+  },
+  "workouts": {
+    "title": "אימונים",
+    "create": "הוסף אימון",
+    "edit": "ערוך אימון",
+    "name": "שם",
+    "namePlaceholder": "לדוג' יום חזה",
+    "dayNo": "יום",
+    "days": {
+      "1": "שני",
+      "2": "שלישי",
+      "3": "רביעי",
+      "4": "חמישי",
+      "5": "שישי",
+      "6": "שבת",
+      "7": "ראשון"
+    },
+    "exercises": "תרגילים",
+    "addExercise": "הוסף תרגיל"
+  },
+  "exercises": {
+    "title": "תרגילים",
+    "create": "צור תרגיל",
+    "edit": "ערוך תרגיל",
+    "empty": "אין תרגילים עדיין",
+    "emptyDescription": "הוסף תרגילים לספרייה שלך",
+    "name": "שם",
+    "namePlaceholder": "לדוג' לחיצת חזה",
+    "description": "תיאור",
+    "instructions": "הוראות",
+    "muscle": "קבוצת שריר",
+    "difficulty": {
+      "label": "רמת קושי",
+      "beginner": "מתחיל",
+      "intermediate": "בינוני",
+      "advanced": "מתקדם"
+    },
+    "sets": "סטים",
+    "targetReps": "חזרות יעד",
+    "restSeconds": "מנוחה (שניות)",
+    "position": "מיקום"
+  },
+  "muscles": {
+    "title": "קבוצות שרירים",
+    "create": "הוסף שריר",
+    "edit": "ערוך שריר",
+    "empty": "אין קבוצות שרירים עדיין",
+    "emptyDescription": "הוסף קבוצות שרירים לסיווג תרגילים",
+    "name": "שם",
+    "namePlaceholder": "לדוג' חזה"
+  },
+  "sessions": {
+    "title": "סשנים",
+    "empty": "אין סשנים עדיין",
+    "emptyDescription": "השלם אימון כדי לראות את ההיסטוריה",
+    "status": {
+      "label": "סטטוס",
+      "planned": "מתוכנן",
+      "in_progress": "בתהליך",
+      "done": "הושלם",
+      "skipped": "דולג"
+    },
+    "scheduledOn": "מתוכנן ל",
+    "startedAt": "התחיל",
+    "endedAt": "הסתיים",
+    "notes": "הערות",
+    "sets": "סטים"
+  },
+  "train": {
+    "title": "אימון",
+    "setsProgress": "{done} / {total} סטים בוצעו",
+    "finish": "סיים אימון",
+    "weight": "משקל (ק\"ג)",
+    "reps": "חזרות",
+    "rpe": "RPE",
+    "notes": "הערות",
+    "done": "בוצע",
+    "targetReps": "יעד: {reps} חזרות"
+  },
+  "statistics": {
+    "title": "סטטיסטיקה",
+    "trainingHours": "שעות אימון",
+    "totalHours": "סה\"כ שעות",
+    "totalSessions": "סה\"כ סשנים",
+    "exerciseProgress": "התקדמות בתרגיל",
+    "programProgress": "התקדמות בתוכנית",
+    "totalSets": "סה\"כ סטים",
+    "totalReps": "סה\"כ חזרות",
+    "totalVolume": "נפח כולל",
+    "bestWeight": "משקל מקסימלי",
+    "daysRemaining": "נותרו {days} ימים",
+    "workoutCompletion": "{percent}% הושלם",
+    "noActiveProgram": "אין תוכנית פעילה",
+    "noActiveProgramDescription": "צור והפעל תוכנית כדי לעקוב אחר ההתקדמות"
+  },
+  "errors": {
+    "notFound": "הדף לא נמצא",
+    "notFoundDescription": "הדף שחיפשת אינו קיים.",
+    "goHome": "לדף הראשי",
+    "somethingWentWrong": "משהו השתבש",
+    "tryAgain": "נסה שנית"
+  }
+}

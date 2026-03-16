@@ -1,0 +1,179 @@
+{
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "create": "Создать",
+    "loading": "Загрузка...",
+    "empty": "Здесь пока ничего нет",
+    "error": "Что-то пошло не так",
+    "retry": "Попробовать снова",
+    "back": "Назад",
+    "close": "Закрыть",
+    "confirm": "Подтвердить",
+    "add": "Добавить",
+    "remove": "Удалить",
+    "search": "Поиск",
+    "noResults": "Ничего не найдено"
+  },
+  "auth": {
+    "login": "Войти",
+    "loginTitle": "С возвращением",
+    "loginDescription": "Введите данные для входа",
+    "phone": "Телефон",
+    "phonePlaceholder": "+7 999 000 0000",
+    "password": "Пароль",
+    "passwordPlaceholder": "••••••••",
+    "invalidCredentials": "Неверный телефон или пароль",
+    "loggingIn": "Вход..."
+  },
+  "nav": {
+    "dashboard": "Главная",
+    "programs": "Программы",
+    "exercises": "Упражнения",
+    "muscles": "Мышцы",
+    "sessions": "Тренировки",
+    "statistics": "Статистика",
+    "train": "Тренироваться"
+  },
+  "dashboard": {
+    "title": "Главная",
+    "startTrain": "Начать тренировку",
+    "finishTrain": "Завершить тренировку",
+    "noSession": "На сегодня тренировок не запланировано",
+    "sessionComplete": "Тренировка завершена!",
+    "upcomingSessions": "Предстоящие тренировки",
+    "noUpcomingSessions": "Нет предстоящих тренировок"
+  },
+  "programs": {
+    "title": "Программы",
+    "create": "Создать программу",
+    "edit": "Редактировать программу",
+    "empty": "Программ пока нет",
+    "emptyDescription": "Создайте первую программу тренировок",
+    "name": "Название",
+    "namePlaceholder": "напр. Сила 12 недель",
+    "status": {
+      "label": "Статус",
+      "unknown": "Неизвестно",
+      "active": "Активна",
+      "done": "Завершена",
+      "canceled": "Отменена",
+      "inactive": "Неактивна"
+    },
+    "category": {
+      "label": "Категория",
+      "strength": "Сила",
+      "mass": "Масса",
+      "cardio": "Кардио"
+    },
+    "startsOn": "Начало",
+    "endsOn": "Конец",
+    "generateSchedule": "Создать расписание",
+    "scheduleGenerated": "Создано {sessions} сессий, {sets} подходов",
+    "workouts": "Тренировки",
+    "addWorkout": "Добавить тренировку"
+  },
+  "workouts": {
+    "title": "Тренировки",
+    "create": "Добавить тренировку",
+    "edit": "Редактировать тренировку",
+    "name": "Название",
+    "namePlaceholder": "напр. День груди",
+    "dayNo": "День",
+    "days": {
+      "1": "Понедельник",
+      "2": "Вторник",
+      "3": "Среда",
+      "4": "Четверг",
+      "5": "Пятница",
+      "6": "Суббота",
+      "7": "Воскресенье"
+    },
+    "exercises": "Упражнения",
+    "addExercise": "Добавить упражнение"
+  },
+  "exercises": {
+    "title": "Упражнения",
+    "create": "Создать упражнение",
+    "edit": "Редактировать упражнение",
+    "empty": "Упражнений пока нет",
+    "emptyDescription": "Добавьте упражнения в библиотеку",
+    "name": "Название",
+    "namePlaceholder": "напр. Жим лёжа",
+    "description": "Описание",
+    "instructions": "Инструкции",
+    "muscle": "Группа мышц",
+    "difficulty": {
+      "label": "Сложность",
+      "beginner": "Начинающий",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый"
+    },
+    "sets": "Подходы",
+    "targetReps": "Целевые повторения",
+    "restSeconds": "Отдых (секунды)",
+    "position": "Позиция"
+  },
+  "muscles": {
+    "title": "Группы мышц",
+    "create": "Добавить мышцу",
+    "edit": "Редактировать мышцу",
+    "empty": "Групп мышц пока нет",
+    "emptyDescription": "Добавьте группы мышц для категоризации упражнений",
+    "name": "Название",
+    "namePlaceholder": "напр. Грудь"
+  },
+  "sessions": {
+    "title": "Сессии",
+    "empty": "Сессий пока нет",
+    "emptyDescription": "Выполните тренировку, чтобы увидеть историю",
+    "status": {
+      "label": "Статус",
+      "planned": "Запланировано",
+      "in_progress": "В процессе",
+      "done": "Завершено",
+      "skipped": "Пропущено"
+    },
+    "scheduledOn": "Запланировано",
+    "startedAt": "Начато",
+    "endedAt": "Завершено",
+    "notes": "Заметки",
+    "sets": "Подходы"
+  },
+  "train": {
+    "title": "Тренировка",
+    "setsProgress": "{done} / {total} подходов выполнено",
+    "finish": "Завершить тренировку",
+    "weight": "Вес (кг)",
+    "reps": "Повторения",
+    "rpe": "РПЕ",
+    "notes": "Заметки",
+    "done": "Готово",
+    "targetReps": "Цель: {reps} повт."
+  },
+  "statistics": {
+    "title": "Статистика",
+    "trainingHours": "Часы тренировок",
+    "totalHours": "Всего часов",
+    "totalSessions": "Всего сессий",
+    "exerciseProgress": "Прогресс упражнения",
+    "programProgress": "Прогресс программы",
+    "totalSets": "Всего подходов",
+    "totalReps": "Всего повторений",
+    "totalVolume": "Общий объём",
+    "bestWeight": "Лучший вес",
+    "daysRemaining": "Осталось {days} дней",
+    "workoutCompletion": "{percent}% выполнено",
+    "noActiveProgram": "Нет активной программы",
+    "noActiveProgramDescription": "Создайте и активируйте программу для отслеживания прогресса"
+  },
+  "errors": {
+    "notFound": "Страница не найдена",
+    "notFoundDescription": "Запрашиваемая страница не существует.",
+    "goHome": "На главную",
+    "somethingWentWrong": "Что-то пошло не так",
+    "tryAgain": "Попробовать снова"
+  }
+}

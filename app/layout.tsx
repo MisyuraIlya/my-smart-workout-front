@@ -1,33 +1,43 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import { getLocale } from 'next-intl/server'
 
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import './globals.css'
+import { cn } from '@/lib/utils'
 
 const fontSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-sans',
 })
 
 const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
+  subsets: ['latin'],
+  variable: '--font-mono',
 })
 
-export default function RootLayout({
+export const metadata: Metadata = {
+  title: {
+    default: 'My Smart Workout',
+    template: '%s | My Smart Workout',
+  },
+  description: 'Track your workouts and progress',
+}
+
+export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
+  const locale = await getLocale()
+
   return (
     <html
-      lang="en"
+      lang={locale}
+      dir={locale === 'he' ? 'rtl' : 'ltr'}
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", fontSans.variable)}
+      className={cn(fontSans.variable, fontMono.variable)}
     >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   )
 }

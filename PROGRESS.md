@@ -1,101 +1,117 @@
 # Progress
 
-## Status: Starting fresh
+## Status: All features complete
 
 ---
 
 ## Done
 
-_(nothing yet)_
+### Foundation
+- [x] `npx create-next-app` scaffold with TypeScript + Tailwind v4
+- [x] shadcn/ui init
+- [x] Install core deps: `react-hook-form`, `zod`, `@hookform/resolvers`, `@tanstack/react-query`, `zustand`, `next-intl` (recharts bundled via shadcn `chart` component)
+- [x] `next.config.mjs` — `output: 'standalone'`, next-intl plugin, `images.remotePatterns` for workout API (localhost:4001)
+- [x] `i18n/routing.ts` + `proxy.ts` for locale routing (en, ru, he) — Next.js 16+ uses `proxy.ts`, not `middleware.ts`
+- [x] Message files `messages/en.json`, `messages/ru.json`, `messages/he.json`
+- [x] Base API client `lib/api/client.ts` (Accept-Language + Bearer token + 401 handler)
+- [x] `app/[locale]/layout.tsx` — locale-aware root layout with NextIntlClientProvider, ThemeProvider, QueryClientProvider
+- [x] `app/global-error.tsx` — root error boundary (must render `<html><body>`, must be `'use client'`)
+- [x] `app/[locale]/error.tsx` — route-level error boundary (`'use client'`)
+- [x] `app/[locale]/not-found.tsx` — 404 page
+- [x] `app/[locale]/loading.tsx` — root loading state
+- [x] `app/api/health/route.ts` — health check endpoint for Docker
+- [x] Zustand auth store `lib/stores/auth.store.ts` + localStorage persistence
+
+### Auth
+- [x] Login page `/[locale]/login` — phone + password form
+
+### API Layer
+- [x] `lib/api/workout.ts` — all CRUD + session + statistics API functions + TypeScript types
+
+### State
+- [x] `lib/stores/train.store.ts` — active session state (sessionId, startedAt, elapsedSeconds, timer)
+
+### Validations
+- [x] `lib/validations/muscle.schema.ts`
+- [x] `lib/validations/exercise.schema.ts`
+- [x] `lib/validations/program.schema.ts`
+- [x] `lib/validations/workout.schema.ts`
+- [x] `lib/validations/workout-exercise.schema.ts`
+- [x] `lib/validations/session-set.schema.ts`
+
+### React Query Hooks
+- [x] `lib/hooks/use-muscles.ts`
+- [x] `lib/hooks/use-exercises.ts`
+- [x] `lib/hooks/use-programs.ts`
+- [x] `lib/hooks/use-workouts.ts`
+- [x] `lib/hooks/use-sessions.ts`
+- [x] `lib/hooks/use-statistics.ts`
+
+### Muscles
+- [x] `components/features/muscles/muscle-form.tsx`
+- [x] `components/features/muscles/muscle-list.tsx`
+- [x] `app/[locale]/(app)/muscles/page.tsx` + `error.tsx` + `loading.tsx`
+
+### Exercises
+- [x] `components/features/exercises/exercise-form.tsx`
+- [x] `components/features/exercises/exercise-list.tsx` — thumbnail image in list
+- [x] `app/[locale]/(app)/exercises/page.tsx` + `error.tsx` + `loading.tsx`
+
+### Programs
+- [x] `components/features/programs/program-form.tsx`
+- [x] `components/features/programs/program-list.tsx`
+- [x] `components/features/programs/program-detail.tsx` — workouts grid by day + exercises per workout
+- [x] `components/features/programs/workout-form.tsx`
+- [x] `components/features/programs/workout-exercise-form.tsx`
+- [x] Generate Schedule button → `POST /training/programs/{id}/schedule`
+- [x] `app/[locale]/(app)/programs/page.tsx` + `[id]/page.tsx` + `error.tsx` + `loading.tsx`
+
+### Sessions
+- [x] `components/features/sessions/session-list.tsx` — history list with status badges
+- [x] `components/features/sessions/session-detail.tsx` — sets grouped by exercise
+- [x] `app/[locale]/(app)/sessions/page.tsx` + `[id]/page.tsx` + `error.tsx` + `loading.tsx`
+
+### Dashboard
+- [x] `components/features/dashboard/train-hero.tsx` — Start/Finish train hero button + live timer
+- [x] `components/features/dashboard/upcoming-sessions.tsx` — horizontal scrollable 14-day strip
+- [x] `components/features/dashboard/hours-chart.tsx` — training hours bar chart (last 30 days)
+- [x] `components/features/dashboard/program-progress-ring.tsx` — radial chart for active program
+- [x] `components/features/dashboard/exercise-progress-chart.tsx` — line chart with exercise picker
+- [x] `app/[locale]/(app)/dashboard/page.tsx` + `error.tsx` + `loading.tsx`
+
+### Training Flow
+- [x] `components/features/train/set-row.tsx` — weight/reps/RPE inputs + Done toggle
+- [x] `components/features/train/train-view.tsx` — sets grouped by exercise + progress + finish
+- [x] `app/[locale]/(app)/train/page.tsx` + `error.tsx` + `loading.tsx`
+
+### Statistics
+- [x] `components/features/statistics/statistics-view.tsx` — hours chart + program ring + exercise chart
+- [x] `app/[locale]/(app)/statistics/page.tsx` + `error.tsx` + `loading.tsx`
+
+### Polish
+- [x] `components/shared/bottom-nav.tsx` — mobile bottom navigation bar (Dashboard, Programs, Sessions, Statistics)
+- [x] `components/shared/locale-switcher.tsx` — EN / RU / HE toggle in header
+- [x] RTL support for Hebrew (`dir="rtl"` on `<html>` via `getLocale()` in root layout)
+- [x] `error.tsx` per route group (muscles, exercises, programs, sessions, train, statistics, dashboard)
+- [x] `loading.tsx` per feature route group
 
 ---
 
 ## In Progress
 
-_(nothing yet)_
-
----
-
-## Up Next
-
-### Foundation
-- [ ] `npx create-next-app` scaffold with TypeScript + Tailwind v4
-- [ ] shadcn/ui init
-- [ ] Install core deps: `react-hook-form`, `zod`, `@hookform/resolvers`, `@tanstack/react-query`, `zustand`, `next-intl` (recharts bundled via shadcn `chart` component)
-- [ ] `next.config.mjs` — `output: 'standalone'`, next-intl plugin, `images.remotePatterns` for workout API (localhost:4001)
-- [ ] `i18n/routing.ts` + `proxy.ts` for locale routing (en, ru, he) — Next.js 16+ uses `proxy.ts`, not `middleware.ts`
-- [ ] Message files `messages/en.json`, `messages/ru.json`, `messages/he.json`
-- [ ] Base API client `lib/api/client.ts` (Accept-Language + Bearer token + 401 handler)
-- [ ] `app/[locale]/layout.tsx` — locale-aware root layout with NextIntlClientProvider, ThemeProvider, QueryClientProvider
-- [ ] `app/global-error.tsx` — root error boundary (must render `<html><body>`, must be `'use client'`)
-- [ ] `app/[locale]/error.tsx` — route-level error boundary (`'use client'`)
-- [ ] `app/[locale]/not-found.tsx` — 404 page
-- [ ] `app/[locale]/loading.tsx` — root loading state
-- [ ] `app/api/health/route.ts` — health check endpoint for Docker
-- [ ] Zustand auth store `lib/stores/auth.store.ts` + localStorage persistence
-
-### Auth
-- [ ] Login page `/[locale]/login` — phone + password form
-
-### Muscles
-- [ ] API hooks `lib/hooks/use-muscles.ts`
-- [ ] Muscles list page + create/edit/delete
-
-### Exercises
-- [ ] API hooks `lib/hooks/use-exercises.ts`
-- [ ] Exercises list page + create/edit/delete
-- [ ] Exercise images — thumbnail in list, full preview in edit sheet
-
-### Programs
-- [ ] API hooks `lib/hooks/use-programs.ts`
-- [ ] Programs list page + create/edit/delete
-- [ ] Program detail page — workouts grid by day
-- [ ] Add exercises to each workout (Sheet/Drawer)
-- [ ] Generate Schedule button → `POST /training/programs/{id}/schedule`
-
-### Workouts
-- [ ] API hooks `lib/hooks/use-workouts.ts`
-- [ ] Workout detail — exercise list + add/remove exercises (via program detail)
-
-### Sessions
-- [ ] API hooks `lib/hooks/use-sessions.ts`
-- [ ] Sessions history list
-- [ ] Session detail page — sets list
-
-### Dashboard (main page)
-- [ ] Start Train hero button → `POST /training/workout-sessions/start-train`
-- [ ] Live elapsed timer (zustand `train.store.ts` + `setInterval`)
-- [ ] Finish Train button → `POST /training/workout-sessions/{id}/finish-train`
-- [ ] Upcoming sessions calendar (week strip, horizontal scroll)
-- [ ] Training hours bar chart (shadcn `Chart` / recharts, last 30 days)
-- [ ] Active program progress ring chart
-- [ ] Exercise progress line chart with exercise picker
-
-### Training Flow (`/train`)
-- [ ] Load session sets grouped by exercise
-- [ ] Set row: weight + reps + RPE + notes + Done toggle
-- [ ] Track set → `POST /training/workout-session-sets/{id}/track` with optimistic update
-- [ ] Progress indicator (X/Y sets done)
-- [ ] Finish training → session summary
-
-### Statistics
-- [ ] Full statistics page `/statistics`
-- [ ] Training hours chart (date range picker)
-- [ ] Exercise progress chart per exercise
-- [ ] Program progress card
-
-### Polish
-- [ ] Bottom navigation bar (mobile)
-- [ ] RTL support for Hebrew (`dir="rtl"` on `<html>`)
-- [ ] `error.tsx` per route group (already in Foundation for root; add per feature group)
-- [ ] `loading.tsx` per feature route group (programs, exercises, sessions, train, statistics)
-- [ ] Locale switcher (EN / RU / HE toggle in header)
+_(nothing)_
 
 ---
 
 ## Decisions
 
-_(none yet — will be recorded as they are made)_
+- `app/layout.tsx` uses `getLocale()` from `next-intl/server` to set `lang` + `dir` on `<html>` — no nested html tags
+- `proxy.ts` (root) exports `proxy` + `proxyConfig` (Next.js 16+ naming)
+- `components/ui/form.tsx` is a minimal hand-written wrapper around react-hook-form (shadcn `@shadcn/form` is empty in radix-nova style)
+- `lib/api/client.ts` takes `locale` as explicit parameter — passed from hooks via `useLocale()`
+- `(app)/layout.tsx` uses `AuthGuard` client component for redirect-on-no-token pattern
+- React Query hooks call `useLocale()` at hook level, pass locale into API functions as closure
+- Train store persists only `sessionId` + `startedAt`; `elapsedSeconds` recomputed on mount from `startedAt`
 
 ---
 
