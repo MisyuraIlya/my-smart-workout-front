@@ -436,16 +436,70 @@ statistics.title / statistics.trainingHours / statistics.exerciseProgress ...
 
 This project uses **`radix-nova`** style (`base: radix`). Always check `npx shadcn@latest info` for installed components before adding or importing.
 
+### Styling
+
 - Use **semantic colors** only: `bg-primary`, `text-muted-foreground` — never `bg-blue-500`.
+- **Status/state indicators**: use `Badge` variants or `text-destructive` — never raw `text-emerald-600` / `text-green-500` / `text-red-600`.
 - Use **`gap-*`**, never `space-x-*` / `space-y-*`.
 - Use **`size-*`** when width == height.
-- **Icons in buttons**: `data-icon="inline-start"` on icon element, no `size-4` classes.
-- **No manual `dark:` overrides**.
+- **No manual `dark:` overrides** — semantic tokens handle both modes.
+- **Use `cn()` from `@/lib/utils`** for conditional/merged class names — no template literal ternaries.
+- **`className` for layout only** (`max-w-md`, `mx-auto`, `mt-4`). Never override component colors or typography via `className`.
+- **No manual `z-index`** on `Dialog`, `Sheet`, `Drawer`, `DropdownMenu`, `Popover`, `Tooltip` — they manage their own stacking.
+
+### Icons
+
+- **Icons in `Button`**: use `data-icon="inline-start"` or `data-icon="inline-end"` — no `size-4`, no `mr-2`.
+- **Icons in `DropdownMenuItem`, `Alert`, `SidebarMenuItem`** and other components: place the icon naked — no size or margin classes at all.
+- **Pass icons as component objects**, not string-keyed lookups: `icon={CheckIcon}` not `icon="check"`.
+- **Icon library for this project**: `lucide-react` (from `components.json` `iconLibrary: "lucide"`).
+
+### Overlay Components — Which to Use
+
+| Use case | Component |
+|---|---|
+| Focused task that requires input (form) | `Dialog` |
+| **Destructive action / delete confirmation** | `AlertDialog` |
+| Side panel with details or filters | `Sheet` |
+| Mobile-first bottom panel (forms on mobile) | `Drawer` |
+| Quick info on hover | `HoverCard` |
+| Small contextual content on click | `Popover` |
+
+Always include a `Title` in every overlay: `DialogTitle`, `SheetTitle`, `DrawerTitle` (use `className="sr-only"` if visually hidden).
+
+### Component Composition
+
 - **Loading buttons**: compose `Spinner` + `disabled` — there is no `isPending` prop on `Button`.
 - **Toasts**: use `toast()` from `sonner` — never custom divs.
-- **Modals**: always include `DialogTitle` (use `className="sr-only"` if visually hidden).
-- **Empty states**: use `Empty` component, not custom markup.
-- **Skeletons**: use `Skeleton` for loading, not custom `animate-pulse` divs.
+- **Empty states**: use `Empty` + `EmptyHeader` + `EmptyTitle` + `EmptyDescription` + `EmptyContent` — not custom markup.
+- **Skeletons**: use `Skeleton` for loading — not custom `animate-pulse` divs.
+- **Status badges**: use `Badge` — not custom `<span>` with color classes.
+- **Dividers**: use `Separator` — not `<hr>` or `<div className="border-t">`.
+- **Cards**: use full composition — `CardHeader` / `CardTitle` / `CardDescription` / `CardContent` / `CardFooter`. Never dump everything in `CardContent`.
+- **Tabs**: `TabsTrigger` must always be inside `TabsList`.
+- **Avatar**: always include `AvatarFallback` for image load failures.
+- **Items always inside their Group** — `SelectItem` → `SelectGroup`, `DropdownMenuItem` → `DropdownMenuGroup`, `CommandItem` → `CommandGroup`. Never render items directly in the content container.
+
+### Active Nav Links (bottom navigation)
+
+Use `usePathname()` to derive active state — wrap in `<Suspense>` since routes are dynamic:
+
+```tsx
+'use client'
+import { usePathname } from 'next/navigation'
+import { Link } from '@/i18n/navigation'   // next-intl Link
+
+export function BottomNav() {
+  const pathname = usePathname()
+  return (
+    <nav>
+      <Link href="/dashboard" className={cn(pathname.includes('/dashboard') && 'text-primary')}>
+        ...
+      </Link>
+    </nav>
+  )
+}
+```
 
 ### Radix API Rules (project uses `radix` base)
 
