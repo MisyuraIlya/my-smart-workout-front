@@ -100,7 +100,7 @@ export function ExerciseList() {
         </Empty>
       ) : (
         <div className="flex flex-col gap-2">
-          {data.items.map((exercise) => {
+          {data.items.map((exercise: Exercise) => {
             const imgUrl = exerciseImageUrl(exercise)
             return (
               <div

@@ -140,7 +140,7 @@ export function ProgramList() {
         </Empty>
       ) : (
         <div className="flex flex-col gap-2">
-          {data.items.map((program) => (
+          {data.items.map((program: Program) => (
             <div
               key={program.id}
               className="flex items-center gap-3 rounded-lg border bg-card px-4 py-4"

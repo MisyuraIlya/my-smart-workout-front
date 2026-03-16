@@ -6,6 +6,7 @@ import {
   getHoursStatistics,
   getExerciseProgressStatistics,
   getProgramProgressStatistics,
+  type Program,
 } from '@/lib/api/workout'
 import { usePrograms } from './use-programs'
 
@@ -46,6 +47,6 @@ export function useProgramProgressStatistics(programId: string) {
 
 export function useActiveProgramProgress() {
   const { data: programs } = usePrograms({ limit: 50 })
-  const activeProgram = programs?.items.find((p) => p.status === 1)
+  const activeProgram = programs?.items.find((p: Program) => p.status === 1)
   return useProgramProgressStatistics(activeProgram?.id ?? '')
 }

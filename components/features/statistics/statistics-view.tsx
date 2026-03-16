@@ -9,6 +9,7 @@ import { Link } from '@/i18n/navigation'
 
 import { useHoursStatistics, useExerciseProgressStatistics, useActiveProgramProgress } from '@/lib/hooks/use-statistics'
 import { useExercises } from '@/lib/hooks/use-exercises'
+import type { Exercise, DailyPoint, ProgressPoint } from '@/lib/api/workout'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -53,12 +54,12 @@ export function StatisticsView() {
   )
   const { data: programProgress, isLoading: programLoading } = useActiveProgramProgress()
 
-  const hoursData = (hours?.daily ?? []).map((d) => ({
+  const hoursData = (hours?.daily ?? []).map((d: DailyPoint) => ({
     date: d.date.slice(5),
     hours: Math.round(d.hours * 10) / 10,
   }))
 
-  const exData = (exProgress?.points ?? []).map((p) => ({
+  const exData = (exProgress?.points ?? []).map((p: ProgressPoint) => ({
     date: p.date.slice(5),
     weight: p.max_weight ?? 0,
   }))
@@ -191,7 +192,7 @@ export function StatisticsView() {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {exercises?.items.map((ex) => (
+                {exercises?.items.map((ex: Exercise) => (
                   <SelectItem key={ex.id} value={ex.id} className="text-xs">
                     {ex.name}
                   </SelectItem>

@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 
 import { useTrainStore } from '@/lib/stores/train.store'
 import { useSession, useSessionSets, useFinishTrain } from '@/lib/hooks/use-sessions'
+import type { WorkoutSessionSet } from '@/lib/api/workout'
 import { useRouter } from '@/i18n/navigation'
 import { SetRow } from './set-row'
 
@@ -68,8 +69,8 @@ export function TrainView() {
 
   // Group sets by exercise
   const grouped = sets.reduce<
-    Record<string, { name: string; targetReps?: number; sets: typeof sets }>
-  >((acc, set) => {
+    Record<string, { name: string; targetReps?: number; sets: WorkoutSessionSet[] }>
+  >((acc, set: WorkoutSessionSet) => {
     const key = set.exercise_id
     if (!acc[key]) {
       acc[key] = {
@@ -82,7 +83,7 @@ export function TrainView() {
     return acc
   }, {})
 
-  const doneSets = sets.filter((s) => s.is_done).length
+  const doneSets = sets.filter((s: WorkoutSessionSet) => s.is_done).length
   const allDone = sets.length > 0 && doneSets === sets.length
 
   async function handleFinish() {
@@ -124,7 +125,7 @@ export function TrainView() {
             {Object.entries(grouped).map(([exerciseId, group]) => (
               <div key={exerciseId} className="flex flex-col gap-2">
                 <h3 className="font-semibold">{group.name}</h3>
-                {group.sets.map((set) => (
+                {group.sets.map((set: WorkoutSessionSet) => (
                   <SetRow
                     key={set.id}
                     set={set}

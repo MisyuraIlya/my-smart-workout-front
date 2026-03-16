@@ -91,7 +91,7 @@ export function MuscleList() {
         </Empty>
       ) : (
         <div className="flex flex-col gap-2">
-          {data.items.map((muscle) => (
+          {data.items.map((muscle: Muscle) => (
             <div
               key={muscle.id}
               className="flex items-center justify-between rounded-lg border bg-card px-4 py-3"

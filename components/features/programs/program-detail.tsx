@@ -7,7 +7,7 @@ import { PlusIcon, Trash2Icon, CalendarIcon, PencilIcon } from 'lucide-react'
 
 import { useProgram, useGenerateSchedule, useUpdateProgram } from '@/lib/hooks/use-programs'
 import { useWorkouts, useWorkoutExercises, useDeleteWorkout, useDeleteWorkoutExercise } from '@/lib/hooks/use-workouts'
-import type { Workout } from '@/lib/api/workout'
+import type { Workout, WorkoutExercise } from '@/lib/api/workout'
 import { WorkoutForm } from './workout-form'
 import { WorkoutExerciseForm } from './workout-exercise-form'
 import { ProgramForm } from './program-form'
@@ -107,7 +107,7 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
 
       {exercises.length > 0 && (
         <div className="flex flex-col gap-1">
-          {exercises.map((we) => (
+          {exercises.map((we: WorkoutExercise) => (
             <div key={we.id} className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-2 text-sm">
               <span>{we.exercise?.name ?? we.exercise_id}</span>
               <div className="flex items-center gap-2 text-muted-foreground">
@@ -240,19 +240,19 @@ export function ProgramDetail({ programId }: Props) {
         <h2 className="text-lg font-semibold">{t('workouts')}</h2>
         {DAY_KEYS.map((dayKey) => {
           const dayNo = parseInt(dayKey)
-          const dayWorkouts = workouts.filter((w) => w.day_no === dayNo)
+          const dayWorkouts = workouts.filter((w: Workout) => w.day_no === dayNo)
 
           return (
             <div key={dayKey} className="flex flex-col gap-2">
               <span className="text-sm font-medium text-muted-foreground">
                 {tw(`days.${dayKey}`)}
               </span>
-              {dayWorkouts.map((w) => (
+              {dayWorkouts.map((w: Workout) => (
                 <WorkoutCard key={w.id} workout={w} programId={programId} />
               ))}
               <Drawer
                 open={addWorkoutDay === dayNo}
-                onOpenChange={(open) => setAddWorkoutDay(open ? dayNo : null)}
+                onOpenChange={(open: boolean) => setAddWorkoutDay(open ? dayNo : null)}
               >
                 <DrawerTrigger asChild>
                   <Button variant="outline" size="sm" className="w-full border-dashed">

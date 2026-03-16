@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Bar, BarChart, XAxis, YAxis } from 'recharts'
 
 import { useHoursStatistics } from '@/lib/hooks/use-statistics'
+import type { DailyPoint } from '@/lib/api/workout'
 
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -25,7 +26,7 @@ export function HoursChart() {
     return <Skeleton className="h-48 w-full rounded-lg" />
   }
 
-  const chartData = (data?.daily ?? []).map((d) => ({
+  const chartData = (data?.daily ?? []).map((d: DailyPoint) => ({
     date: d.date.slice(5), // MM-DD
     hours: Math.round(d.hours * 10) / 10,
   }))

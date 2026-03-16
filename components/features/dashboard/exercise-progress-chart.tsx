@@ -6,6 +6,7 @@ import { Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import { useExercises } from '@/lib/hooks/use-exercises'
 import { useExerciseProgressStatistics } from '@/lib/hooks/use-statistics'
+import type { Exercise, ProgressPoint } from '@/lib/api/workout'
 
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -35,7 +36,7 @@ export function ExerciseProgressChart() {
   const exerciseId = selectedId || exercises?.items[0]?.id || ''
   const { data, isLoading } = useExerciseProgressStatistics(exerciseId, from, to)
 
-  const chartData = (data?.points ?? []).map((p) => ({
+  const chartData = (data?.points ?? []).map((p: ProgressPoint) => ({
     date: p.date.slice(5),
     weight: p.max_weight ?? 0,
   }))
@@ -53,7 +54,7 @@ export function ExerciseProgressChart() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {exercises?.items.map((ex) => (
+              {exercises?.items.map((ex: Exercise) => (
                 <SelectItem key={ex.id} value={ex.id} className="text-xs">
                   {ex.name}
                 </SelectItem>

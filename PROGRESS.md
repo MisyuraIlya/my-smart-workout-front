@@ -101,6 +101,12 @@
 
 - [x] Add Exercises tab to bottom navigation bar
 - [x] Add "Generate Schedule" button per program card on programs list page
+- [x] Fix exercise image loading — added `unoptimized` to `next/image` in `exercise-list.tsx` to bypass Next.js SSRF private-IP block for Minio images served from `192.168.1.x:9000`
+- [x] Add explicit TypeScript types across all feature components
+  - Extract named types `DailyPoint`, `ProgressPoint`, `ExerciseSummary` from inline arrays in `lib/api/workout.ts`
+  - Annotate all `.map()` / `.filter()` / `.reduce()` callbacks with explicit parameter types
+  - Add missing `type` imports (`WorkoutSession`, `WorkoutSessionSet`, `WorkoutExercise`, `Exercise`, `DailyPoint`, `ProgressPoint`) to components and hooks that were missing them
+  - Affected: `exercise-list`, `muscle-list`, `program-list`, `program-detail`, `session-list`, `session-detail`, `train-view`, `statistics-view`, `exercise-progress-chart`, `hours-chart`, `upcoming-sessions`, `use-statistics`
 
 ## UI Improvements
 

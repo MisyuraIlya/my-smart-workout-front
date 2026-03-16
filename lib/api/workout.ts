@@ -112,18 +112,39 @@ export interface WorkoutSessionSet {
   exercise?: Exercise
 }
 
+export interface DailyPoint {
+  date: string
+  total_seconds: number
+  hours: number
+  sessions: number
+}
+
 export interface HoursStatistics {
   from: string
   to: string
   total_seconds: number
   total_hours: number
   total_sessions: number
-  daily: Array<{
-    date: string
-    total_seconds: number
-    hours: number
-    sessions: number
-  }>
+  daily: DailyPoint[]
+}
+
+export interface ExerciseSummary {
+  total_sessions: number
+  total_sets: number
+  total_reps: number
+  total_volume: number
+  best_weight?: number
+  best_estimated_one_rm?: number
+}
+
+export interface ProgressPoint {
+  date: string
+  sessions: number
+  sets: number
+  total_reps: number
+  total_volume: number
+  max_weight?: number
+  estimated_one_rm?: number
 }
 
 export interface ExerciseProgressStatistics {
@@ -131,23 +152,8 @@ export interface ExerciseProgressStatistics {
   exercise_name: string
   from: string
   to: string
-  summary: {
-    total_sessions: number
-    total_sets: number
-    total_reps: number
-    total_volume: number
-    best_weight?: number
-    best_estimated_one_rm?: number
-  }
-  points: Array<{
-    date: string
-    sessions: number
-    sets: number
-    total_reps: number
-    total_volume: number
-    max_weight?: number
-    estimated_one_rm?: number
-  }>
+  summary: ExerciseSummary
+  points: ProgressPoint[]
 }
 
 export interface ProgramProgressStatistics {

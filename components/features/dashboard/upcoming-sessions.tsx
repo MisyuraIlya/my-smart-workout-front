@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 
 import { useSessions } from '@/lib/hooks/use-sessions'
+import type { WorkoutSession } from '@/lib/api/workout'
 
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -34,7 +35,7 @@ export function UpcomingSessions() {
   const { data, isLoading } = useSessions({ status: 'planned', from, to, limit: 50 })
 
   const sessions = data?.items ?? []
-  const sessionsByDate = sessions.reduce<Record<string, typeof sessions[0]>>((acc, s) => {
+  const sessionsByDate = sessions.reduce<Record<string, WorkoutSession>>((acc, s: WorkoutSession) => {
     acc[s.scheduled_on] = s
     return acc
   }, {})
@@ -54,7 +55,7 @@ export function UpcomingSessions() {
       ) : (
         <ScrollArea orientation="horizontal">
           <div className="flex gap-2 pb-2">
-            {days.map((date) => {
+            {days.map((date: string) => {
               const session = sessionsByDate[date]
               const d = new Date(date + 'T00:00:00')
               const isToday = date === today

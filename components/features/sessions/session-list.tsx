@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation'
 import { ChevronRightIcon } from 'lucide-react'
 
 import { useSessions } from '@/lib/hooks/use-sessions'
+import type { WorkoutSession } from '@/lib/api/workout'
 
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -47,7 +48,7 @@ export function SessionList() {
       ) : (
         <ScrollArea className="h-[calc(100vh-12rem)]">
           <div className="flex flex-col gap-2">
-            {data.items.map((session) => (
+            {data.items.map((session: WorkoutSession) => (
               <Link
                 key={session.id}
                 href={`/sessions/${session.id}`}
