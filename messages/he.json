@@ -104,6 +104,7 @@
     "namePlaceholder": "לדוג' לחיצת חזה",
     "description": "תיאור",
     "instructions": "הוראות",
+    "instructionsPlaceholder": "הוראה אחת בכל שורה",
     "muscle": "קבוצת שריר",
     "difficulty": {
       "label": "רמת קושי",
@@ -151,7 +152,10 @@
     "rpe": "RPE",
     "notes": "הערות",
     "done": "בוצע",
-    "targetReps": "יעד: {reps} חזרות"
+    "targetReps": "יעד: {reps} חזרות",
+    "noActiveSession": "אין אימון פעיל",
+    "noActiveSessionDescription": "התחל אימון מדף הבית.",
+    "sessionComplete": "האימון הושלם!"
   },
   "statistics": {
     "title": "סטטיסטיקה",

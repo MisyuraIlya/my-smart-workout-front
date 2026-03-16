@@ -45,7 +45,7 @@ function BottomNavInner() {
 
 export function BottomNav() {
   return (
-    <Suspense>
+    <Suspense fallback={<nav className="fixed bottom-0 left-0 right-0 h-14 border-t bg-background" />}>
       <BottomNavInner />
     </Suspense>
   )

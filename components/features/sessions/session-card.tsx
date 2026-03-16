@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+import { useTranslations, useFormatter } from 'next-intl'
 import { ChevronRightIcon } from 'lucide-react'
 
 import type { WorkoutSession } from '@/lib/api/workout'
@@ -21,6 +21,7 @@ interface SessionCardProps {
 
 export function SessionCard({ session }: SessionCardProps) {
   const t = useTranslations('sessions')
+  const format = useFormatter()
 
   return (
     <Link
@@ -41,7 +42,7 @@ export function SessionCard({ session }: SessionCardProps) {
         )}
         {session.started_at && (
           <span className="text-xs text-muted-foreground">
-            {t('startedAt')}: {new Date(session.started_at).toLocaleTimeString()}
+            {t('startedAt')}: {format.dateTime(new Date(session.started_at), { timeStyle: 'short' })}
           </span>
         )}
       </div>

@@ -52,8 +52,8 @@ export function TrainView() {
       <div className="flex flex-col items-center justify-center gap-4 py-12">
         <Empty>
           <EmptyHeader>
-            <EmptyTitle>No active session</EmptyTitle>
-            <EmptyDescription>Start a training session from the dashboard.</EmptyDescription>
+            <EmptyTitle>{t('noActiveSession')}</EmptyTitle>
+            <EmptyDescription>{t('noActiveSessionDescription')}</EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
             <Button asChild>
@@ -92,7 +92,7 @@ export function TrainView() {
       await finishMutation.mutateAsync(sessionId)
       const id = sessionId
       finishSession()
-      toast.success('Session complete!')
+      toast.success(t('sessionComplete'))
       router.push(`/sessions/${id}`)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : tc('error'))

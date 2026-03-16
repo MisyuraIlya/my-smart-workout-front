@@ -104,6 +104,7 @@
     "namePlaceholder": "напр. Жим лёжа",
     "description": "Описание",
     "instructions": "Инструкции",
+    "instructionsPlaceholder": "По одной инструкции на строку",
     "muscle": "Группа мышц",
     "difficulty": {
       "label": "Сложность",
@@ -151,7 +152,10 @@
     "rpe": "РПЕ",
     "notes": "Заметки",
     "done": "Готово",
-    "targetReps": "Цель: {reps} повт."
+    "targetReps": "Цель: {reps} повт.",
+    "noActiveSession": "Нет активной тренировки",
+    "noActiveSessionDescription": "Начните тренировку с главной страницы.",
+    "sessionComplete": "Тренировка завершена!"
   },
   "statistics": {
     "title": "Статистика",

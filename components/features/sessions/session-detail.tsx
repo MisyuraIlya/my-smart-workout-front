@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
+import { useTranslations, useFormatter } from 'next-intl'
 
 import { useSession, useSessionSets } from '@/lib/hooks/use-sessions'
 import type { WorkoutSessionSet } from '@/lib/api/workout'
@@ -25,6 +25,7 @@ interface Props {
 export function SessionDetail({ sessionId }: Props) {
   const t = useTranslations('sessions')
   const tt = useTranslations('train')
+  const format = useFormatter()
   const { data: session, isLoading: sessionLoading } = useSession(sessionId)
   const { data: setsData, isLoading: setsLoading } = useSessionSets(sessionId)
 
@@ -64,12 +65,12 @@ export function SessionDetail({ sessionId }: Props) {
         {session.workout && <h1 className="text-2xl font-bold">{session.workout.name}</h1>}
         {session.started_at && (
           <p className="text-sm text-muted-foreground">
-            {t('startedAt')}: {new Date(session.started_at).toLocaleString()}
+            {t('startedAt')}: {format.dateTime(new Date(session.started_at), { dateStyle: 'medium', timeStyle: 'short' })}
           </p>
         )}
         {session.ended_at && (
           <p className="text-sm text-muted-foreground">
-            {t('endedAt')}: {new Date(session.ended_at).toLocaleString()}
+            {t('endedAt')}: {format.dateTime(new Date(session.ended_at), { dateStyle: 'medium', timeStyle: 'short' })}
           </p>
         )}
         {session.notes && (

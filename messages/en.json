@@ -104,6 +104,7 @@
     "namePlaceholder": "e.g. Bench Press",
     "description": "Description",
     "instructions": "Instructions",
+    "instructionsPlaceholder": "One instruction per line",
     "muscle": "Muscle Group",
     "difficulty": {
       "label": "Difficulty",
@@ -151,7 +152,10 @@
     "rpe": "RPE",
     "notes": "Notes",
     "done": "Done",
-    "targetReps": "Target: {reps} reps"
+    "targetReps": "Target: {reps} reps",
+    "noActiveSession": "No active session",
+    "noActiveSessionDescription": "Start a training session from the dashboard.",
+    "sessionComplete": "Session complete!"
   },
   "statistics": {
     "title": "Statistics",
