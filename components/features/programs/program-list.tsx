@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -105,22 +105,24 @@ export function ProgramList() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{t('title')}</h1>
-        <Sheet open={createOpen} onOpenChange={setCreateOpen}>
-          <SheetTrigger asChild>
+        <Drawer open={createOpen} onOpenChange={setCreateOpen}>
+          <DrawerTrigger asChild>
             <Button size="sm">
               <PlusIcon data-icon="inline-start" />
               {tc('create')}
             </Button>
-          </SheetTrigger>
-          <SheetContent className="overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle>{t('create')}</SheetTitle>
-            </SheetHeader>
-            <div className="mt-6">
-              <ProgramForm onSuccess={() => setCreateOpen(false)} />
+          </DrawerTrigger>
+          <DrawerContent>
+            <div className="overflow-y-auto px-4 pb-6">
+              <DrawerHeader>
+                <DrawerTitle>{t('create')}</DrawerTitle>
+              </DrawerHeader>
+              <div className="mt-2">
+                <ProgramForm onSuccess={() => setCreateOpen(false)} />
+              </div>
             </div>
-          </SheetContent>
-        </Sheet>
+          </DrawerContent>
+        </Drawer>
       </div>
 
       {!data?.items.length ? (

@@ -12,7 +12,7 @@ import { MuscleForm } from './muscle-form'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,22 +56,24 @@ export function MuscleList() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">{t('title')}</h1>
-        <Sheet open={createOpen} onOpenChange={setCreateOpen}>
-          <SheetTrigger asChild>
+        <Drawer open={createOpen} onOpenChange={setCreateOpen}>
+          <DrawerTrigger asChild>
             <Button size="sm">
               <PlusIcon data-icon="inline-start" />
               {tc('add')}
             </Button>
-          </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>{t('create')}</SheetTitle>
-            </SheetHeader>
-            <div className="mt-6">
-              <MuscleForm onSuccess={() => setCreateOpen(false)} />
+          </DrawerTrigger>
+          <DrawerContent>
+            <div className="overflow-y-auto px-4 pb-6">
+              <DrawerHeader>
+                <DrawerTitle>{t('create')}</DrawerTitle>
+              </DrawerHeader>
+              <div className="mt-2">
+                <MuscleForm onSuccess={() => setCreateOpen(false)} />
+              </div>
             </div>
-          </SheetContent>
-        </Sheet>
+          </DrawerContent>
+        </Drawer>
       </div>
 
       {!data?.items.length ? (
@@ -96,14 +98,14 @@ export function MuscleList() {
             >
               <span className="font-medium">{muscle.name}</span>
               <div className="flex items-center gap-2">
-                <Sheet
+                <Drawer
                   open={editOpen && editTarget?.id === muscle.id}
                   onOpenChange={(open) => {
                     setEditOpen(open)
                     if (!open) setEditTarget(null)
                   }}
                 >
-                  <SheetTrigger asChild>
+                  <DrawerTrigger asChild>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -112,24 +114,26 @@ export function MuscleList() {
                       <PencilIcon />
                       <span className="sr-only">{tc('edit')}</span>
                     </Button>
-                  </SheetTrigger>
-                  <SheetContent>
-                    <SheetHeader>
-                      <SheetTitle>{t('edit')}</SheetTitle>
-                    </SheetHeader>
-                    <div className="mt-6">
-                      {editTarget && (
-                        <MuscleForm
-                          muscle={editTarget}
-                          onSuccess={() => {
-                            setEditOpen(false)
-                            setEditTarget(null)
-                          }}
-                        />
-                      )}
+                  </DrawerTrigger>
+                  <DrawerContent>
+                    <div className="overflow-y-auto px-4 pb-6">
+                      <DrawerHeader>
+                        <DrawerTitle>{t('edit')}</DrawerTitle>
+                      </DrawerHeader>
+                      <div className="mt-2">
+                        {editTarget && (
+                          <MuscleForm
+                            muscle={editTarget}
+                            onSuccess={() => {
+                              setEditOpen(false)
+                              setEditTarget(null)
+                            }}
+                          />
+                        )}
+                      </div>
                     </div>
-                  </SheetContent>
-                </Sheet>
+                  </DrawerContent>
+                </Drawer>
 
                 <AlertDialog>
                   <AlertDialogTrigger asChild>

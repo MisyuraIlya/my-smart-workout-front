@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,27 +54,29 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
       <div className="flex items-center justify-between">
         <span className="font-semibold">{workout.name}</span>
         <div className="flex items-center gap-1">
-          <Sheet open={editOpen} onOpenChange={setEditOpen}>
-            <SheetTrigger asChild>
+          <Drawer open={editOpen} onOpenChange={setEditOpen}>
+            <DrawerTrigger asChild>
               <Button variant="ghost" size="icon">
                 <PencilIcon />
                 <span className="sr-only">{tc('edit')}</span>
               </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>{t('edit')}</SheetTitle>
-              </SheetHeader>
-              <div className="mt-6">
-                <WorkoutForm
-                  programId={programId}
-                  dayNo={workout.day_no}
-                  workout={workout}
-                  onSuccess={() => setEditOpen(false)}
-                />
+            </DrawerTrigger>
+            <DrawerContent>
+              <div className="overflow-y-auto px-4 pb-6">
+                <DrawerHeader>
+                  <DrawerTitle>{t('edit')}</DrawerTitle>
+                </DrawerHeader>
+                <div className="mt-2">
+                  <WorkoutForm
+                    programId={programId}
+                    dayNo={workout.day_no}
+                    workout={workout}
+                    onSuccess={() => setEditOpen(false)}
+                  />
+                </div>
               </div>
-            </SheetContent>
-          </Sheet>
+            </DrawerContent>
+          </Drawer>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -127,26 +129,28 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
         </div>
       )}
 
-      <Sheet open={addExOpen} onOpenChange={setAddExOpen}>
-        <SheetTrigger asChild>
+      <Drawer open={addExOpen} onOpenChange={setAddExOpen}>
+        <DrawerTrigger asChild>
           <Button variant="outline" size="sm" className="mt-1">
             <PlusIcon data-icon="inline-start" />
             {t('addExercise')}
           </Button>
-        </SheetTrigger>
-        <SheetContent className="overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>{te('name')}</SheetTitle>
-          </SheetHeader>
-          <div className="mt-6">
-            <WorkoutExerciseForm
-              workoutId={workout.id}
-              currentCount={exercises.length}
-              onSuccess={() => setAddExOpen(false)}
-            />
+        </DrawerTrigger>
+        <DrawerContent>
+          <div className="overflow-y-auto px-4 pb-6">
+            <DrawerHeader>
+              <DrawerTitle>{te('name')}</DrawerTitle>
+            </DrawerHeader>
+            <div className="mt-2">
+              <WorkoutExerciseForm
+                workoutId={workout.id}
+                currentCount={exercises.length}
+                onSuccess={() => setAddExOpen(false)}
+              />
+            </div>
           </div>
-        </SheetContent>
-      </Sheet>
+        </DrawerContent>
+      </Drawer>
     </div>
   )
 }
@@ -210,22 +214,24 @@ export function ProgramDetail({ programId }: Props) {
             <Badge variant="outline">{t(`category.${program.category}`)}</Badge>
           </div>
         </div>
-        <Sheet open={editOpen} onOpenChange={setEditOpen}>
-          <SheetTrigger asChild>
+        <Drawer open={editOpen} onOpenChange={setEditOpen}>
+          <DrawerTrigger asChild>
             <Button variant="outline" size="sm">
               <PencilIcon data-icon="inline-start" />
               {tc('edit')}
             </Button>
-          </SheetTrigger>
-          <SheetContent className="overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle>{t('edit')}</SheetTitle>
-            </SheetHeader>
-            <div className="mt-6">
-              <ProgramForm program={program} onSuccess={() => setEditOpen(false)} />
+          </DrawerTrigger>
+          <DrawerContent>
+            <div className="overflow-y-auto px-4 pb-6">
+              <DrawerHeader>
+                <DrawerTitle>{t('edit')}</DrawerTitle>
+              </DrawerHeader>
+              <div className="mt-2">
+                <ProgramForm program={program} onSuccess={() => setEditOpen(false)} />
+              </div>
             </div>
-          </SheetContent>
-        </Sheet>
+          </DrawerContent>
+        </Drawer>
       </div>
 
       <Separator />
@@ -244,29 +250,31 @@ export function ProgramDetail({ programId }: Props) {
               {dayWorkouts.map((w) => (
                 <WorkoutCard key={w.id} workout={w} programId={programId} />
               ))}
-              <Sheet
+              <Drawer
                 open={addWorkoutDay === dayNo}
                 onOpenChange={(open) => setAddWorkoutDay(open ? dayNo : null)}
               >
-                <SheetTrigger asChild>
+                <DrawerTrigger asChild>
                   <Button variant="outline" size="sm" className="w-full border-dashed">
                     <PlusIcon data-icon="inline-start" />
                     {t('addWorkout')}
                   </Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>{tw('create')}</SheetTitle>
-                  </SheetHeader>
-                  <div className="mt-6">
-                    <WorkoutForm
-                      programId={programId}
-                      dayNo={dayNo}
-                      onSuccess={() => setAddWorkoutDay(null)}
-                    />
+                </DrawerTrigger>
+                <DrawerContent>
+                  <div className="overflow-y-auto px-4 pb-6">
+                    <DrawerHeader>
+                      <DrawerTitle>{tw('create')}</DrawerTitle>
+                    </DrawerHeader>
+                    <div className="mt-2">
+                      <WorkoutForm
+                        programId={programId}
+                        dayNo={dayNo}
+                        onSuccess={() => setAddWorkoutDay(null)}
+                      />
+                    </div>
                   </div>
-                </SheetContent>
-              </Sheet>
+                </DrawerContent>
+              </Drawer>
             </div>
           )
         })}
