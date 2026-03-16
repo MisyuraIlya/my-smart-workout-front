@@ -434,6 +434,8 @@ statistics.title / statistics.trainingHours / statistics.exerciseProgress ...
 
 ## shadcn/ui Rules (summary from SKILL.md)
 
+This project uses **`radix-nova`** style (`base: radix`). Always check `npx shadcn@latest info` for installed components before adding or importing.
+
 - Use **semantic colors** only: `bg-primary`, `text-muted-foreground` — never `bg-blue-500`.
 - Use **`gap-*`**, never `space-x-*` / `space-y-*`.
 - Use **`size-*`** when width == height.
@@ -444,6 +446,44 @@ statistics.title / statistics.trainingHours / statistics.exerciseProgress ...
 - **Modals**: always include `DialogTitle` (use `className="sr-only"` if visually hidden).
 - **Empty states**: use `Empty` component, not custom markup.
 - **Skeletons**: use `Skeleton` for loading, not custom `animate-pulse` divs.
+
+### Radix API Rules (project uses `radix` base)
+
+**Triggers — always use `asChild`**, never wrap in an extra element:
+```tsx
+// Correct
+<DialogTrigger asChild><Button>Open</Button></DialogTrigger>
+// Wrong
+<DialogTrigger><div><Button>Open</Button></div></DialogTrigger>
+```
+Applies to: `DialogTrigger`, `SheetTrigger`, `AlertDialogTrigger`, `DropdownMenuTrigger`, `PopoverTrigger`, `TooltipTrigger`, `CollapsibleTrigger`, `DialogClose`, `SheetClose`.
+
+**ToggleGroup** — use `type="single"` or `type="multiple"`, `defaultValue` is a string (single) or string array (multiple):
+```tsx
+<ToggleGroup type="single" defaultValue="strength">...</ToggleGroup>
+```
+
+**Accordion** — use `type="single"` or `type="multiple"`, add `collapsible` for single. `defaultValue` is a string:
+```tsx
+<Accordion type="single" collapsible defaultValue="item-1">...</Accordion>
+```
+
+**Slider** — `defaultValue` is always an array:
+```tsx
+<Slider defaultValue={[50]} max={100} step={1} />
+```
+
+**Select** — inline JSX (no `items` prop), placeholder via `<SelectValue placeholder="...">`:
+```tsx
+<Select>
+  <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectItem value="strength">Strength</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+```
 
 ---
 
@@ -459,7 +499,10 @@ statistics.title / statistics.trainingHours / statistics.exerciseProgress ...
   ```
 - **`useSearchParams()`** requires a `<Suspense>` boundary — always wrap the component.
 - **`usePathname()`** requires a `<Suspense>` boundary in dynamic routes (`[id]`, `[locale]`, etc.).
-- Never use `<img>` — always `next/image`.
+- Never use `<img>` — always `next/image`. Exercise images come from the workout API — add `remotePatterns` in `next.config.mjs`:
+  ```js
+  images: { remotePatterns: [{ protocol: 'http', hostname: 'localhost', port: '4001' }] }
+  ```
 - Never use `<Link>` from `next/link` for locale-aware navigation — use `next-intl`'s `Link`.
 - **Error boundaries**: every route group needs `error.tsx` (`'use client'` required); root needs `global-error.tsx` (must include `<html>` and `<body>`).
 - Add `loading.tsx` per route segment for automatic Suspense-powered loading UI.
@@ -700,6 +743,15 @@ export const trackSetSchema = z.object({
 - `Accept-Language` validation errors return `{ status: 'error', message: '...' }`.
 - Use `error.tsx` for page-level errors (`'use client'` required), `global-error.tsx` for root layout errors (must render `<html><body>`).
 - Network errors: show retry button with `useQueryErrorResetBoundary`.
+
+## Hydration Pitfalls
+
+Avoid these patterns that cause server/client mismatch:
+
+- **Dates/times**: never render `new Date().toLocaleString()` directly. For the live timer, initialize `elapsedSeconds` in `useEffect`, not on render.
+- **Browser APIs**: never read `window.*` / `localStorage` during render — gate behind `useEffect` or a `mounted` check.
+- **Random IDs**: use `useId()` from React, not `Math.random()`.
+- **Invalid HTML**: no `<div>` inside `<p>`, no nested `<p>`.
 
 ## Debugging (Next.js 16+)
 

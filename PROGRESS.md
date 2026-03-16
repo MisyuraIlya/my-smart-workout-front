@@ -22,7 +22,7 @@ _(nothing yet)_
 - [ ] `npx create-next-app` scaffold with TypeScript + Tailwind v4
 - [ ] shadcn/ui init
 - [ ] Install core deps: `react-hook-form`, `zod`, `@hookform/resolvers`, `@tanstack/react-query`, `zustand`, `next-intl` (recharts bundled via shadcn `chart` component)
-- [ ] `next.config.mjs` — `output: 'standalone'`, next-intl plugin
+- [ ] `next.config.mjs` — `output: 'standalone'`, next-intl plugin, `images.remotePatterns` for workout API (localhost:4001)
 - [ ] `i18n/routing.ts` + `proxy.ts` for locale routing (en, ru, he) — Next.js 16+ uses `proxy.ts`, not `middleware.ts`
 - [ ] Message files `messages/en.json`, `messages/ru.json`, `messages/he.json`
 - [ ] Base API client `lib/api/client.ts` (Accept-Language + Bearer token + 401 handler)
@@ -67,7 +67,7 @@ _(nothing yet)_
 - [ ] Live elapsed timer (zustand `train.store.ts` + `setInterval`)
 - [ ] Finish Train button → `POST /training/workout-sessions/{id}/finish-train`
 - [ ] Upcoming sessions calendar (week strip, horizontal scroll)
-- [ ] Training hours bar chart (`recharts`, last 30 days)
+- [ ] Training hours bar chart (shadcn `Chart` / recharts, last 30 days)
 - [ ] Active program progress ring chart
 - [ ] Exercise progress line chart with exercise picker
 
