@@ -113,8 +113,10 @@
 - [x] Fix exercise image loading — added `unoptimized` to `next/image` in `exercise-list.tsx` to bypass Next.js SSRF private-IP block for Minio images served from `192.168.1.x:9000`
 - [x] Add explicit TypeScript types across all feature components
   - Extract named types `DailyPoint`, `ProgressPoint`, `ExerciseSummary` from inline arrays in `lib/api/workout.ts`
-  - Annotate all `.map()` / `.filter()` / `.reduce()` callbacks with explicit parameter types
-  - Add missing `type` imports (`WorkoutSession`, `WorkoutSessionSet`, `WorkoutExercise`, `Exercise`, `DailyPoint`, `ProgressPoint`) to components and hooks that were missing them
+  - React Query infers `data` type from `queryFn` return — callback parameter annotations in `.map()` / `.filter()` / `.reduce()` are redundant and were removed
+  - Removed redundant explicit type annotations from map/filter/reduce callbacks: `exercise-list`, `muscle-list`, `program-list`, `session-list`, `program-detail`, `session-detail`
+  - Dropped now-unused `type` imports (`Exercise`, `Muscle`, `Program`, `WorkoutSession`, `WorkoutExercise`) from list components — types flow from the hook through React Query inference
+  - `WorkoutSessionSet` kept in `session-detail` — still needed as generic parameter for `reduce<Record<string, WorkoutSessionSet[]>>`
   - Affected: `exercise-list`, `muscle-list`, `program-list`, `program-detail`, `session-list`, `session-detail`, `train-view`, `statistics-view`, `exercise-progress-chart`, `hours-chart`, `upcoming-sessions`, `use-statistics`
 
 - [x] Highlight nearest upcoming session in dashboard Upcoming Sessions strip — fills the nearest session's day card with `bg-primary text-primary-foreground` so it visually stands out as "next up"
