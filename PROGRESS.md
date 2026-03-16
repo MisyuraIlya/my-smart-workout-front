@@ -102,6 +102,15 @@
 - [x] Add Exercises tab to bottom navigation bar
 - [x] Add "Generate Schedule" button per program card on programs list page
 
+## UI Improvements
+
+- [x] Replaced all `Sheet` (slide-from-right) with `Drawer` (slide-from-bottom) for create/edit forms across all feature pages — mobile-first feel
+  - `components/features/muscles/muscle-list.tsx` — create + edit muscle
+  - `components/features/exercises/exercise-list.tsx` — create + edit exercise
+  - `components/features/programs/program-list.tsx` — create program
+  - `components/features/programs/program-detail.tsx` — edit program, edit workout, add exercise to workout, add workout per day
+- [x] Generate Schedule button on program detail page is now a sticky bottom bar (fixed above bottom nav) — always visible during program setup flow, disabled until at least one workout exists
+
 ---
 
 ## Decisions

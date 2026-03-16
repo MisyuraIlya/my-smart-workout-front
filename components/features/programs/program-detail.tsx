@@ -200,7 +200,7 @@ export function ProgramDetail({ programId }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 pb-28">
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold">{program.name}</h1>
@@ -280,18 +280,20 @@ export function ProgramDetail({ programId }: Props) {
         })}
       </div>
 
-      <Separator />
-
-      <Button
-        size="lg"
-        onClick={handleGenerateSchedule}
-        disabled={generateSchedule.isPending || workouts.length === 0}
-        className="w-full"
-      >
-        {generateSchedule.isPending && <Spinner data-icon="inline-start" />}
-        <CalendarIcon data-icon="inline-start" />
-        {t('generateSchedule')}
-      </Button>
+      <div className="fixed bottom-16 left-0 right-0 z-40 border-t bg-background px-4 py-3">
+        <div className="mx-auto max-w-2xl">
+          <Button
+            size="lg"
+            onClick={handleGenerateSchedule}
+            disabled={generateSchedule.isPending || workouts.length === 0}
+            className="w-full"
+          >
+            {generateSchedule.isPending && <Spinner data-icon="inline-start" />}
+            <CalendarIcon data-icon="inline-start" />
+            {t('generateSchedule')}
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }
