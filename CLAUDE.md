@@ -51,71 +51,70 @@ Three MCP servers are active in this project. Use them proactively.
 ## Project Directory Layout
 
 ```
-src/
-  app/
-    [locale]/                  # next-intl locale wrapper
-      (auth)/
-        login/page.tsx
-      (app)/
-        dashboard/page.tsx
-        programs/
-          page.tsx
-          [id]/page.tsx
-        workouts/
-          page.tsx
-          [id]/page.tsx
-        exercises/
-          page.tsx
-          [id]/page.tsx
-        muscles/
-          page.tsx
-          [id]/page.tsx
-        sessions/
-          page.tsx
-          [id]/page.tsx
-        train/
-          page.tsx             # active training flow
-        statistics/
-          page.tsx
-  components/
-    ui/                        # shadcn primitives (auto-generated)
-    shared/                    # reusable app-level components
-    features/
-      auth/
+app/
+  [locale]/                  # next-intl locale wrapper
+    (auth)/
+      login/page.tsx
+    (app)/
+      dashboard/page.tsx
       programs/
+        page.tsx
+        [id]/page.tsx
       workouts/
+        page.tsx
+        [id]/page.tsx
       exercises/
+        page.tsx
+        [id]/page.tsx
       muscles/
+        page.tsx
+        [id]/page.tsx
       sessions/
+        page.tsx
+        [id]/page.tsx
       train/
+        page.tsx             # active training flow
       statistics/
-  lib/
-    api/
-      auth.ts                  # auth API client
-      workout.ts               # workout API client
-      client.ts                # base fetch wrapper (adds Authorization + Accept-Language)
-    hooks/
-      use-auth.ts
-      use-locale.ts
-    stores/
-      auth.store.ts            # zustand: token, profile
-      train.store.ts           # zustand: active session state
-    validations/               # zod schemas mirroring API inputs
-      auth.schema.ts
-      exercise.schema.ts
-      muscle.schema.ts
-      program.schema.ts
-      workout.schema.ts
-      session.schema.ts
-      session-set.schema.ts
-  i18n/
-    routing.ts
-    navigation.ts
-  messages/
-    en.json
-    ru.json
-    he.json
-  middleware.ts
+        page.tsx
+components/
+  ui/                        # shadcn primitives (auto-generated)
+  shared/                    # reusable app-level components
+  features/
+    auth/
+    programs/
+    workouts/
+    exercises/
+    muscles/
+    sessions/
+    train/
+    statistics/
+lib/
+  api/
+    auth.ts                  # auth API client
+    workout.ts               # workout API client
+    client.ts                # base fetch wrapper (adds Authorization + Accept-Language)
+  hooks/
+    use-auth.ts
+    use-locale.ts
+  stores/
+    auth.store.ts            # zustand: token, profile
+    train.store.ts           # zustand: active session state
+  validations/               # zod schemas mirroring API inputs
+    auth.schema.ts
+    exercise.schema.ts
+    muscle.schema.ts
+    program.schema.ts
+    workout.schema.ts
+    session.schema.ts
+    session-set.schema.ts
+i18n/
+  routing.ts
+  navigation.ts
+messages/
+  en.json
+  ru.json
+  he.json
+middleware.ts
 ```
 
 ---
@@ -162,7 +161,7 @@ interface AuthState {
 
 ## API Client — Base Rules
 
-File: `src/lib/api/client.ts`
+File: `lib/api/client.ts`
 
 - Every request must send `Accept-Language: <current next-intl locale>` (en | ru | he).
 - Every protected request must send `Authorization: Bearer <token>` from auth store.
@@ -363,6 +362,7 @@ export function useCreateProgram() {
 
 All forms use `react-hook-form` + `zod` + `@hookform/resolvers/zod`.
 All form layouts use shadcn `FieldGroup` + `Field` — never raw `div` + `Label`.
+For 2–7 mutually-exclusive options (category, status, difficulty) use `ToggleGroup` + `ToggleGroupItem` — never a loop of `Button` with manual active state.
 
 ```tsx
 // Required pattern for every form
@@ -450,13 +450,32 @@ statistics.title / statistics.trainingHours / statistics.exerciseProgress ...
 ## Next.js App Router Rules (summary from SKILL.md)
 
 - Default to **Server Components**. Add `"use client"` only when you need hooks, event handlers, or browser APIs.
-- **Async params/searchParams** in Next.js 15: always `await params` before using.
+- **Async params/searchParams** in Next.js 15+: type as `Promise<{...}>` and always `await` before using.
+  ```tsx
+  type Props = { params: Promise<{ id: string }> }
+  export default async function Page({ params }: Props) {
+    const { id } = await params
+  }
+  ```
 - **`useSearchParams()`** requires a `<Suspense>` boundary — always wrap the component.
+- **`usePathname()`** requires a `<Suspense>` boundary in dynamic routes (`[id]`, `[locale]`, etc.).
 - Never use `<img>` — always `next/image`.
 - Never use `<Link>` from `next/link` for locale-aware navigation — use `next-intl`'s `Link`.
-- **Error boundaries**: every route group needs `error.tsx`; root needs `global-error.tsx`.
+- **Error boundaries**: every route group needs `error.tsx` (`'use client'` required); root needs `global-error.tsx` (must include `<html>` and `<body>`).
+- Add `loading.tsx` per route segment for automatic Suspense-powered loading UI.
+- Add `not-found.tsx` per route group for 404 states; call `notFound()` from server components when resource is missing.
+- **Never catch `redirect()` / `notFound()` / `forbidden()` in try-catch** — they throw internally. Either call them outside the try block, or use `unstable_rethrow(error)` inside catch.
 - Server Actions for mutations that don't need optimistic updates; react-query mutations for everything in interactive UI.
-- `output: 'standalone'` in `next.config.ts` for Docker deployment.
+- `output: 'standalone'` in `next.config.mjs` for Docker deployment.
+- **Middleware is `proxy.ts` in Next.js 16+** (renamed from `middleware.ts`). Export `proxy()` and `proxyConfig` instead of `middleware()` and `config`.
+
+### RSC Boundary — Non-Serializable Props
+
+Props from Server → Client must be JSON-serializable. Never pass:
+- `Date` objects → use `.toISOString()` and reconstruct with `new Date()` in the client
+- `Map` / `Set` → convert to `Object.fromEntries()` / `Array.from()`
+- Class instances → pass plain objects
+- Plain functions → define inside the client component (Server Actions with `'use server'` are the exception)
 
 ---
 
@@ -524,7 +543,7 @@ The dashboard is the heart of the app. Three stacked sections on mobile:
 
 ### 3. Progress Charts
 
-Use **`recharts`** for all charts (install: `npm install recharts`). Never use canvas directly.
+Use the shadcn **`Chart`** component (wraps recharts) — `npx shadcn@latest add chart`. Never use canvas or raw recharts directly.
 
 Three chart cards stacked vertically:
 
@@ -679,5 +698,23 @@ export const trackSetSchema = z.object({
 - API errors return `{ error: string }` or `{ status: string, message: string }`.
 - Display API error messages via `toast.error(...)` from `sonner`.
 - `Accept-Language` validation errors return `{ status: 'error', message: '...' }`.
-- Use `error.tsx` for page-level errors, `global-error.tsx` for root layout errors.
+- Use `error.tsx` for page-level errors (`'use client'` required), `global-error.tsx` for root layout errors (must render `<html><body>`).
 - Network errors: show retry button with `useQueryErrorResetBoundary`.
+
+## Debugging (Next.js 16+)
+
+The dev server exposes `/_next/mcp` by default — use it to get build errors, routes, and logs without reading files manually:
+
+```bash
+# Get current build/runtime errors
+curl -X POST http://localhost:3000/_next/mcp \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":"1","method":"tools/call","params":{"name":"get_errors","arguments":{}}}'
+
+# Available tools: get_errors | get_routes | get_project_metadata | get_logs | get_server_action_by_id
+```
+
+Rebuild a single route without full build:
+```bash
+next build --debug-build-paths "/[locale]/dashboard"
+```

@@ -21,12 +21,17 @@ _(nothing yet)_
 ### Foundation
 - [ ] `npx create-next-app` scaffold with TypeScript + Tailwind v4
 - [ ] shadcn/ui init
-- [ ] Install core deps: `react-hook-form`, `zod`, `@hookform/resolvers`, `@tanstack/react-query`, `zustand`, `next-intl`, `recharts`
+- [ ] Install core deps: `react-hook-form`, `zod`, `@hookform/resolvers`, `@tanstack/react-query`, `zustand`, `next-intl` (recharts bundled via shadcn `chart` component)
 - [ ] `next.config.mjs` — `output: 'standalone'`, next-intl plugin
-- [ ] `i18n/routing.ts` + `middleware.ts` for locale routing (en, ru, he)
+- [ ] `i18n/routing.ts` + `proxy.ts` for locale routing (en, ru, he) — Next.js 16+ uses `proxy.ts`, not `middleware.ts`
 - [ ] Message files `messages/en.json`, `messages/ru.json`, `messages/he.json`
 - [ ] Base API client `lib/api/client.ts` (Accept-Language + Bearer token + 401 handler)
 - [ ] `app/[locale]/layout.tsx` — locale-aware root layout with NextIntlClientProvider, ThemeProvider, QueryClientProvider
+- [ ] `app/global-error.tsx` — root error boundary (must render `<html><body>`, must be `'use client'`)
+- [ ] `app/[locale]/error.tsx` — route-level error boundary (`'use client'`)
+- [ ] `app/[locale]/not-found.tsx` — 404 page
+- [ ] `app/[locale]/loading.tsx` — root loading state
+- [ ] `app/api/health/route.ts` — health check endpoint for Docker
 - [ ] Zustand auth store `lib/stores/auth.store.ts` + localStorage persistence
 
 ### Auth
@@ -82,7 +87,8 @@ _(nothing yet)_
 ### Polish
 - [ ] Bottom navigation bar (mobile)
 - [ ] RTL support for Hebrew (`dir="rtl"` on `<html>`)
-- [ ] `error.tsx` + `global-error.tsx` boundaries
+- [ ] `error.tsx` per route group (already in Foundation for root; add per feature group)
+- [ ] `loading.tsx` per feature route group (programs, exercises, sessions, train, statistics)
 - [ ] Locale switcher (EN / RU / HE toggle in header)
 
 ---
