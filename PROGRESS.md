@@ -106,6 +106,10 @@
   - `components/features/sessions/session-set-row.tsx` — `SessionSetRow` (set number, weight/reps/RPE, done badge)
   - Updated: `exercise-list`, `muscle-list`, `program-list`, `session-list`, `program-detail`, `session-detail`
 
+- [x] Fix double scroll on train page — `pb-32` on `<main>` caused page-level scroll on top of the inner `ScrollArea` scroll, leaving dead space at the bottom
+  - `app/[locale]/(app)/train/page.tsx` — replaced `py-6 pb-32` with `pt-6 h-[calc(100dvh-3.5rem)] overflow-hidden` to constrain page to viewport, no overflow
+  - `components/features/train/train-view.tsx` — outer div gets `h-full`; `ScrollArea` changed from `h-[calc(100vh-16rem)]` to `flex-1 min-h-0` (fills remaining space via flex); inner content padding moved to `pb-28` so last set clears the fixed Finish button
+
 ## In Progress
 
 - [x] Add Exercises tab to bottom navigation bar
