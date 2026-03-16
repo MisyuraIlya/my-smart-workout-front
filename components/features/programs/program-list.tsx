@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { PlusIcon, Trash2Icon, ChevronRightIcon } from 'lucide-react'
+import { PlusIcon, Trash2Icon, ChevronRightIcon, CalendarIcon } from 'lucide-react'
 
-import { usePrograms, useDeleteProgram } from '@/lib/hooks/use-programs'
+import { usePrograms, useDeleteProgram, useGenerateSchedule, useUpdateProgram } from '@/lib/hooks/use-programs'
 import type { Program } from '@/lib/api/workout'
 import { ProgramForm } from './program-form'
 import { Link } from '@/i18n/navigation'
@@ -13,6 +13,7 @@ import { Link } from '@/i18n/navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from '@/components/ui/spinner'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import {
@@ -41,6 +42,38 @@ const STATUS_VARIANTS: Record<number, 'default' | 'secondary' | 'destructive' | 
   2: 'secondary',
   3: 'destructive',
   4: 'outline',
+}
+
+function ProgramScheduleButton({ program }: { program: Program }) {
+  const t = useTranslations('programs')
+  const tc = useTranslations('common')
+  const generateSchedule = useGenerateSchedule()
+  const updateProgram = useUpdateProgram()
+
+  async function handleGenerate(e: React.MouseEvent) {
+    e.preventDefault()
+    try {
+      const result = await generateSchedule.mutateAsync(program.id)
+      await updateProgram.mutateAsync({ id: program.id, data: { status: 'active' } })
+      toast.success(t('scheduleGenerated', { sessions: result.sessions_created, sets: result.sets_created }))
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : tc('error'))
+    }
+  }
+
+  const isPending = generateSchedule.isPending || updateProgram.isPending
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={handleGenerate}
+      disabled={isPending}
+    >
+      {isPending ? <Spinner /> : <CalendarIcon />}
+      <span className="sr-only">{t('generateSchedule')}</span>
+    </Button>
+  )
 }
 
 export function ProgramList() {
@@ -120,6 +153,7 @@ export function ProgramList() {
                 </div>
               </Link>
               <div className="flex items-center gap-1 shrink-0">
+                <ProgramScheduleButton program={program} />
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="ghost" size="icon">

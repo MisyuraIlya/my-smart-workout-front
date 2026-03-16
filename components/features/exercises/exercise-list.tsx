@@ -27,11 +27,11 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 
-const WORKOUT_API = process.env.NEXT_PUBLIC_WORKOUT_API_URL ?? 'http://localhost:4001/api/v1'
+const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL ?? 'http://localhost:9000'
 
 function exerciseImageUrl(exercise: Exercise) {
   if (!exercise.image) return null
-  return `${WORKOUT_API}/training/exercises/${exercise.id}/image`
+  return `${STORAGE_URL}/${exercise.image.bucket_name}/${exercise.image.storage_key}`
 }
 
 export function ExerciseList() {
@@ -107,7 +107,7 @@ export function ExerciseList() {
               >
                 {imgUrl ? (
                   <div className="relative size-12 shrink-0 overflow-hidden rounded-md">
-                    <Image src={imgUrl} alt={exercise.name} fill className="object-cover" />
+                    <Image src={imgUrl} alt={exercise.name} fill className="object-cover" unoptimized />
                   </div>
                 ) : (
                   <div className="size-12 shrink-0 rounded-md bg-muted" />

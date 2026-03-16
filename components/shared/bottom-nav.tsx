@@ -3,7 +3,7 @@
 import { Suspense } from 'react'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { LayoutDashboardIcon, DumbbellIcon, CalendarIcon, BarChart3Icon } from 'lucide-react'
+import { LayoutDashboardIcon, DumbbellIcon, CalendarIcon, BarChart3Icon, ActivityIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Link } from '@/i18n/navigation'
 
@@ -14,6 +14,7 @@ function BottomNavInner() {
   const items = [
     { href: '/dashboard' as const, label: t('dashboard'), icon: LayoutDashboardIcon },
     { href: '/programs' as const, label: t('programs'), icon: CalendarIcon },
+    { href: '/exercises' as const, label: t('exercises'), icon: ActivityIcon },
     { href: '/sessions' as const, label: t('sessions'), icon: DumbbellIcon },
     { href: '/statistics' as const, label: t('statistics'), icon: BarChart3Icon },
   ]

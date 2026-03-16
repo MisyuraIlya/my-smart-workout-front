@@ -99,7 +99,8 @@
 
 ## In Progress
 
-_(nothing)_
+- [x] Add Exercises tab to bottom navigation bar
+- [x] Add "Generate Schedule" button per program card on programs list page
 
 ---
 
