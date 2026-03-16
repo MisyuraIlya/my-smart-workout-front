@@ -10,22 +10,29 @@ export interface Profile {
 }
 
 interface AuthState {
+  _hasHydrated: boolean
   token: string | null
   profile: Profile | null
   setAuth: (token: string, profile: Profile) => void
   clearAuth: () => void
+  setHasHydrated: (v: boolean) => void
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
+      _hasHydrated: false,
       token: null,
       profile: null,
       setAuth: (token, profile) => set({ token, profile }),
       clearAuth: () => set({ token: null, profile: null }),
+      setHasHydrated: (v) => set({ _hasHydrated: v }),
     }),
     {
       name: 'auth-storage',
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true)
+      },
       storage: createJSONStorage(() => {
         if (typeof window === 'undefined') {
           return {

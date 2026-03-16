@@ -108,6 +108,9 @@
   - Add missing `type` imports (`WorkoutSession`, `WorkoutSessionSet`, `WorkoutExercise`, `Exercise`, `DailyPoint`, `ProgressPoint`) to components and hooks that were missing them
   - Affected: `exercise-list`, `muscle-list`, `program-list`, `program-detail`, `session-list`, `session-detail`, `train-view`, `statistics-view`, `exercise-progress-chart`, `hours-chart`, `upcoming-sessions`, `use-statistics`
 
+- [x] Highlight nearest upcoming session in dashboard Upcoming Sessions strip — fills the nearest session's day card with `bg-primary text-primary-foreground` so it visually stands out as "next up"
+- [x] Fix auth session lost on page reload — Zustand `persist` rehydrates asynchronously; `AuthGuard` was redirecting to `/login` before localStorage was read. Added `_hasHydrated` flag + `onRehydrateStorage` to `auth.store.ts`; `AuthGuard` now waits for hydration before checking token.
+
 ## UI Improvements
 
 - [x] Replaced all `Sheet` (slide-from-right) with `Drawer` (slide-from-bottom) for create/edit forms across all feature pages — mobile-first feel

@@ -48,6 +48,70 @@ Three MCP servers are active in this project. Use them proactively.
 
 ---
 
+## Zustand Stores — localStorage Persistence Rules
+
+**Every** Zustand store **must** use `persist` + `createJSONStorage(() => localStorage)`.
+
+### SSR-safe storage helper (required pattern)
+
+```ts
+storage: createJSONStorage(() => {
+  if (typeof window === 'undefined') {
+    return { getItem: () => null, setItem: () => {}, removeItem: () => {} }
+  }
+  return window.localStorage
+})
+```
+
+### Hydration guard (required for stores used in auth/routing)
+
+Zustand `persist` rehydrates from localStorage **asynchronously**. On first render the store holds its `initialState` defaults (e.g. `token: null`), not the persisted values. Any component that redirects based on store state **must** wait for hydration to finish, or it will incorrectly redirect on every page reload.
+
+**Pattern — add `_hasHydrated` to the store:**
+
+```ts
+interface MyState {
+  _hasHydrated: boolean
+  setHasHydrated: (v: boolean) => void
+  // ... rest of state
+}
+
+export const useMyStore = create<MyState>()(
+  persist(
+    (set) => ({
+      _hasHydrated: false,
+      setHasHydrated: (v) => set({ _hasHydrated: v }),
+      // ...
+    }),
+    {
+      name: 'my-storage',
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true)
+      },
+      storage: createJSONStorage(() => { /* SSR-safe */ }),
+    },
+  ),
+)
+```
+
+**Pattern — guard component waits for hydration:**
+
+```tsx
+const token = useAuthStore((s) => s.token)
+const hasHydrated = useAuthStore((s) => s._hasHydrated)
+
+useEffect(() => {
+  if (hasHydrated && !token) router.replace('/login')
+}, [hasHydrated, token, router])
+
+if (!hasHydrated) return null   // still reading localStorage
+if (!token) return null
+```
+
+`_hasHydrated` is intentionally **not** in `partialize` — it must always start as `false` and be set to `true` after hydration completes.
+
+---
+
 ## Project Directory Layout
 
 ```

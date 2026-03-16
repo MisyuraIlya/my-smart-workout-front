@@ -42,6 +42,7 @@ export function UpcomingSessions() {
 
   const days = getDays()
   const today = days[0]
+  const nearestSessionDate = days.find((d: string) => sessionsByDate[d])
 
   return (
     <div className="flex flex-col gap-2">
@@ -59,22 +60,26 @@ export function UpcomingSessions() {
               const session = sessionsByDate[date]
               const d = new Date(date + 'T00:00:00')
               const isToday = date === today
+              const isNearest = date === nearestSessionDate
               return (
                 <div
                   key={date}
                   className={cn(
                     'flex shrink-0 flex-col items-center gap-1 rounded-xl border px-3 py-2',
-                    isToday && 'border-primary bg-primary/5',
-                    session && 'bg-card',
+                    isToday && !isNearest && 'border-primary bg-primary/5',
+                    isNearest && 'border-primary bg-primary text-primary-foreground',
+                    !isNearest && session && 'bg-card',
                   )}
                 >
-                  <span className="text-xs text-muted-foreground">{DAY_SHORT[d.getDay()]}</span>
-                  <span className={cn('text-sm font-semibold', isToday && 'text-primary')}>
+                  <span className={cn('text-xs', isNearest ? 'text-primary-foreground/70' : 'text-muted-foreground')}>
+                    {DAY_SHORT[d.getDay()]}
+                  </span>
+                  <span className={cn('text-sm font-semibold', isToday && !isNearest && 'text-primary')}>
                     {d.getDate()}
                   </span>
                   {session ? (
                     <Link href={`/sessions/${session.id}`} className="mt-1">
-                      <span className="size-2 rounded-full bg-primary block" />
+                      <span className={cn('size-2 rounded-full block', isNearest ? 'bg-primary-foreground' : 'bg-primary')} />
                     </Link>
                   ) : (
                     <span className="mt-1 size-2 rounded-full bg-transparent block" />
