@@ -21,7 +21,7 @@ _(nothing yet)_
 ### Foundation
 - [ ] `npx create-next-app` scaffold with TypeScript + Tailwind v4
 - [ ] shadcn/ui init
-- [ ] Install core deps: `react-hook-form`, `zod`, `@hookform/resolvers`, `@tanstack/react-query`, `zustand`, `next-intl`
+- [ ] Install core deps: `react-hook-form`, `zod`, `@hookform/resolvers`, `@tanstack/react-query`, `zustand`, `next-intl`, `recharts`
 - [ ] `next.config.ts` — `output: 'standalone'`, next-intl plugin
 - [ ] `src/i18n/routing.ts` + `middleware.ts` for locale routing (en, ru, he)
 - [ ] Empty message files `messages/en.json`, `messages/ru.json`, `messages/he.json`
@@ -42,7 +42,9 @@ _(nothing yet)_
 ### Programs
 - [ ] API hooks `src/lib/hooks/use-programs.ts`
 - [ ] Programs list page + create/edit/delete
-- [ ] Program detail page — workouts list + generate schedule
+- [ ] Program detail page — workouts grid by day
+- [ ] Add exercises to each workout (Sheet/Drawer)
+- [ ] Generate Schedule button → `POST /training/programs/{id}/schedule`
 
 ### Workouts
 - [ ] API hooks `src/lib/hooks/use-workouts.ts`
@@ -53,13 +55,24 @@ _(nothing yet)_
 - [ ] Sessions history list
 - [ ] Session detail page — sets list
 
-### Training Flow
-- [ ] Active training screen `/[locale]/train`
-- [ ] Start training → `POST /training/workout-sessions/start-train`
-- [ ] Live set tracking with optimistic updates
+### Dashboard (main page)
+- [ ] Start Train hero button → `POST /training/workout-sessions/start-train`
+- [ ] Live elapsed timer (zustand `train.store.ts` + `setInterval`)
+- [ ] Finish Train button → `POST /training/workout-sessions/{id}/finish-train`
+- [ ] Upcoming sessions calendar (week strip, horizontal scroll)
+- [ ] Training hours bar chart (`recharts`, last 30 days)
+- [ ] Active program progress ring chart
+- [ ] Exercise progress line chart with exercise picker
+
+### Training Flow (`/train`)
+- [ ] Load session sets grouped by exercise
+- [ ] Set row: weight + reps + RPE + notes + Done toggle
+- [ ] Track set → `POST /training/workout-session-sets/{id}/track` with optimistic update
+- [ ] Progress indicator (X/Y sets done)
 - [ ] Finish training → session summary
 
 ### Statistics
+- [ ] Full statistics page `/statistics`
 - [ ] Training hours chart (date range picker)
 - [ ] Exercise progress chart per exercise
 - [ ] Program progress card

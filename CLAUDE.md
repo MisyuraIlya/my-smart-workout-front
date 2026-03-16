@@ -467,32 +467,144 @@ Primary usage is mobile. Design decisions:
 | Route | Description |
 |---|---|
 | `/[locale]/login` | Login form (phone + password) |
-| `/[locale]/dashboard` | Overview: today's session, quick stats |
+| `/[locale]/dashboard` | **Main page**: Start/Finish train button, live timer, upcoming sessions calendar, progress charts |
 | `/[locale]/programs` | Program list + create |
-| `/[locale]/programs/[id]` | Program detail, workouts list, generate schedule, progress stats |
-| `/[locale]/workouts` | Workout list |
+| `/[locale]/programs/[id]` | Program detail → workouts list → exercises per workout → Generate Schedule button |
 | `/[locale]/workouts/[id]` | Workout detail + exercise list |
 | `/[locale]/exercises` | Exercise library list + create |
 | `/[locale]/exercises/[id]` | Exercise detail + progress chart |
 | `/[locale]/muscles` | Muscle group list + create |
 | `/[locale]/sessions` | Session history list |
 | `/[locale]/sessions/[id]` | Session detail + sets |
-| `/[locale]/train` | Active training screen (start-train → live set tracking → finish-train) |
-| `/[locale]/statistics` | Training hours chart + program progress cards |
+| `/[locale]/train` | Active training screen (live set tracking during session) |
+| `/[locale]/statistics` | Full statistics page |
 
 ---
 
-## Training Flow (key UX)
+## Dashboard Screen (main page after login)
 
-1. User taps **"Start Training"** → `POST /training/workout-sessions/start-train`
-   - Returns the `WorkoutSession` with status `in_progress`.
-   - Store session ID in `train.store.ts` (zustand).
-2. Show all sets for this session grouped by exercise.
-3. Each set row has: target reps, weight input, RPE input, "Done" toggle.
-4. Tapping "Done" on a set → `POST /training/workout-session-sets/{id}/track` with `{ is_done: true, reps, weight, rpe }`.
-   - Optimistic update in react-query for instant UI feedback.
-5. When all sets are done → enable **"Finish Training"** → `POST /training/workout-sessions/{id}/finish-train`.
-6. Clear `train.store.ts`, navigate to session summary.
+The dashboard is the heart of the app. Three stacked sections on mobile:
+
+### 1. Start / Finish Train Hero Button
+
+- Default state: large full-width **"Start Training"** button (prominent, `min-h-16`).
+- On tap → `POST /training/workout-sessions/start-train`
+  - `404` response = no planned session today → show toast "No session planned for today" and disable button.
+  - `200` = session started → store `session_id` + `started_at` in `train.store.ts`.
+- Active state: button transforms to show:
+  - Live **elapsed timer** (counting up from `started_at`, updated every second via `setInterval` in zustand).
+  - **"Finish Training"** label replaces "Start Training".
+  - Color changes to destructive/warning variant.
+- On "Finish Training" tap → `POST /training/workout-sessions/{id}/finish-train`
+  - On success: clear `train.store.ts`, show toast "Session complete 🎉", navigate to session summary `/sessions/[id]`.
+- If `train.store.ts` has an active session on app load → restore timer state (session was started before, app was closed).
+- The button also links to `/train` where the user does the actual set tracking during the session.
+
+### 2. Upcoming Sessions Calendar
+
+- Horizontal scrollable week strip (Mon–Sun) showing which days have planned sessions.
+- Fetch sessions: `GET /training/workout-sessions?status=planned` filtered to the next 14 days.
+- Days with sessions show a dot indicator and workout name.
+- Tapping a day navigates to that session detail.
+- Use `ScrollArea` horizontal for the week strip.
+
+### 3. Progress Charts
+
+Use **`recharts`** for all charts (install: `npm install recharts`). Never use canvas directly.
+
+Three chart cards stacked vertically:
+
+**Training Hours (bar chart)**
+- `GET /training/statistics/hours?from=YYYY-MM-DD&to=YYYY-MM-DD`
+- Default range: last 30 days.
+- Bar chart: x = date, y = hours. Show `total_hours` and `total_sessions` as summary badges above chart.
+
+**Active Program Progress (radial/progress)**
+- `GET /training/statistics/programs/{id}/progress` for the current active program.
+- Show: program name, date range, circular progress ring (`workout_completion_percent`), days remaining.
+- If no active program → show empty state with link to create a program.
+
+**Exercise Progress (line chart)**
+- `GET /training/statistics/exercises/{id}/progress?from=...&to=...`
+- Let user pick an exercise from a dropdown (default: most recently trained).
+- Line chart: x = date, y = max_weight or estimated_one_rm.
+- Show summary: total sets, total reps, total volume, best weight.
+
+---
+
+## Training Flow — Active Session (`/train`)
+
+Navigated to from the dashboard Start button once a session is `in_progress`.
+
+1. **Load session sets**: `GET /training/workout-sessions/{id}` to get full session data.
+2. **Group sets by exercise**: display as accordion or flat list grouped by exercise name.
+3. **Each set row** (large touch targets, `min-h-14`):
+   - Set number badge
+   - Target reps (from `workout_exercise.target_reps`) shown as hint
+   - Weight input (`number`, step 0.5 kg)
+   - Reps input (`number`)
+   - RPE input (optional, 0–10 scale, shown as chip selector)
+   - Notes input (optional, expandable text field)
+   - **"Done" toggle** — large checkbox/button
+4. **Tapping "Done"** → `POST /training/workout-session-sets/{id}/track`
+   ```json
+   { "reps": 10, "weight": 80.5, "rpe": 8, "notes": "felt strong", "is_done": true }
+   ```
+   - Optimistic update in react-query for instant UI.
+   - At least one field is required (API contract) — `is_done: true` always satisfies this.
+   - Show checkmark animation on success.
+5. **Progress indicator**: "X / Y sets done" shown at top.
+6. **Finish button**: enabled when all sets are done OR user manually enables it. Calls `POST /training/workout-sessions/{id}/finish-train`.
+
+### train.store.ts shape
+
+```ts
+interface TrainState {
+  sessionId: string | null
+  startedAt: string | null          // ISO string from API
+  elapsedSeconds: number            // updated every second
+  timerInterval: ReturnType<typeof setInterval> | null
+  startSession: (sessionId: string, startedAt: string) => void
+  finishSession: () => void
+  tickTimer: () => void
+}
+```
+
+---
+
+## Program Creation Flow
+
+Full guided flow: Program → Workouts → Exercises → Generate Schedule.
+
+### Step 1 — Create Program (`POST /training/programs`)
+
+Fields: name, category (`strength` | `mass` | `cardio`), starts_on (date), ends_on (date), status (default `inactive`).
+
+### Step 2 — Create Workouts for the Program (`POST /training/workouts`)
+
+On program detail page `/programs/[id]`:
+- Show days of the week (Mon–Sun) as a grid.
+- User taps a day → opens Sheet with workout name + day_no (1–7).
+- Can create multiple workouts (e.g., Mon=Chest, Wed=Back, Fri=Legs).
+- Display created workouts as cards per day.
+
+### Step 3 — Add Exercises to Each Workout
+
+On workout detail via Sheet/Drawer on the program page:
+- List of `workout_exercises` for this workout.
+- "Add Exercise" → opens exercise picker (search from exercise library).
+- Per exercise: set `position`, `sets`, `target_reps`, `rest_seconds`.
+- Reorder exercises by dragging (update `position` via PUT).
+
+### Step 4 — Generate Schedule
+
+- Prominent **"Generate Schedule"** button on program detail page.
+- Validates before calling: program must have ≥ 1 workout, each workout must have ≥ 1 exercise.
+- Calls `POST /training/programs/{id}/schedule`
+  - Returns `{ program_id, sessions_created, sets_created }`.
+  - Show success toast: "Schedule created: {sessions_created} sessions, {sets_created} sets".
+- After generation, program status should be set to `active` (PUT program).
+- Button is disabled if schedule was already generated (check if sessions exist for this program).
 
 ---
 
