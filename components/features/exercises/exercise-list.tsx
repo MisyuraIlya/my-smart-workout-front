@@ -6,7 +6,6 @@ import { toast } from 'sonner'
 import { PlusIcon } from 'lucide-react'
 
 import { useExercises, useDeleteExercise } from '@/lib/hooks/use-exercises'
-import type { Exercise } from '@/lib/api/workout'
 import { ExerciseForm } from './exercise-form'
 import { ExerciseCard } from './exercise-card'
 
@@ -79,7 +78,7 @@ export function ExerciseList() {
         </Empty>
       ) : (
         <div className="flex flex-col gap-2">
-          {data.items.map((exercise: Exercise) => (
+          {data.items.map((exercise) => (
             <ExerciseCard key={exercise.id} exercise={exercise} onDelete={handleDelete} />
           ))}
         </div>

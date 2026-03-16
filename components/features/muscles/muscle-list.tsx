@@ -6,7 +6,6 @@ import { toast } from 'sonner'
 import { PlusIcon } from 'lucide-react'
 
 import { useMuscles, useDeleteMuscle } from '@/lib/hooks/use-muscles'
-import type { Muscle } from '@/lib/api/workout'
 import { MuscleForm } from './muscle-form'
 import { MuscleCard } from './muscle-card'
 
@@ -79,7 +78,7 @@ export function MuscleList() {
         </Empty>
       ) : (
         <div className="flex flex-col gap-2">
-          {data.items.map((muscle: Muscle) => (
+          {data.items.map((muscle) => (
             <MuscleCard key={muscle.id} muscle={muscle} onDelete={handleDelete} />
           ))}
         </div>

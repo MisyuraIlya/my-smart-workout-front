@@ -6,7 +6,6 @@ import { toast } from 'sonner'
 import { PlusIcon } from 'lucide-react'
 
 import { usePrograms, useDeleteProgram } from '@/lib/hooks/use-programs'
-import type { Program } from '@/lib/api/workout'
 import { ProgramForm } from './program-form'
 import { ProgramCard } from './program-card'
 
@@ -79,7 +78,7 @@ export function ProgramList() {
         </Empty>
       ) : (
         <div className="flex flex-col gap-2">
-          {data.items.map((program: Program) => (
+          {data.items.map((program) => (
             <ProgramCard key={program.id} program={program} onDelete={handleDelete} />
           ))}
         </div>

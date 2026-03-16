@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl'
 
 import { useSessions } from '@/lib/hooks/use-sessions'
-import type { WorkoutSession } from '@/lib/api/workout'
 import { SessionCard } from './session-card'
 
 import { Skeleton } from '@/components/ui/skeleton'
@@ -39,7 +38,7 @@ export function SessionList() {
       ) : (
         <ScrollArea className="h-[calc(100vh-12rem)]">
           <div className="flex flex-col gap-2">
-            {data.items.map((session: WorkoutSession) => (
+            {data.items.map((session) => (
               <SessionCard key={session.id} session={session} />
             ))}
           </div>

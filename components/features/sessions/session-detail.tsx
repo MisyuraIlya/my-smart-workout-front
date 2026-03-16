@@ -43,14 +43,14 @@ export function SessionDetail({ sessionId }: Props) {
   const sets = setsData?.items ?? []
 
   // Group sets by exercise
-  const grouped = sets.reduce<Record<string, WorkoutSessionSet[]>>((acc, set: WorkoutSessionSet) => {
+  const grouped = sets.reduce<Record<string, WorkoutSessionSet[]>>((acc, set) => {
     const key = set.exercise_id
     if (!acc[key]) acc[key] = []
     acc[key].push(set)
     return acc
   }, {})
 
-  const doneSets = sets.filter((s: WorkoutSessionSet) => s.is_done).length
+  const doneSets = sets.filter((s) => s.is_done).length
 
   return (
     <div className="flex flex-col gap-6">
@@ -102,7 +102,7 @@ export function SessionDetail({ sessionId }: Props) {
                   <h3 className="font-semibold">
                     {exercise?.name ?? exerciseId}
                   </h3>
-                  {exerciseSets.map((set: WorkoutSessionSet) => (
+                  {exerciseSets.map((set) => (
                     <SessionSetRow key={set.id} set={set} />
                   ))}
                 </div>
