@@ -1,7 +1,21 @@
 # My Smart Workout — Frontend
 
 Next.js 15 + shadcn/ui fitness tracking app (mobile-first).
-Skills: `.agents/skills/shadcn/SKILL.md`, `.agents/skills/next-best-practices/SKILL.md`
+
+---
+
+## MANDATORY: Read Skills Before Any Work
+
+**Before writing or editing any code, you MUST read these skill files in full:**
+
+1. **shadcn/ui skill** → `.agents/skills/shadcn/SKILL.md`
+   - Also read: `.agents/skills/shadcn/rules/styling.md`, `.agents/skills/shadcn/rules/forms.md`, `.agents/skills/shadcn/rules/icons.md`, `.agents/skills/shadcn/rules/composition.md`, `.agents/skills/shadcn/rules/base-vs-radix.md`
+   - Also read: `.agents/skills/shadcn/cli.md`, `.agents/skills/shadcn/customization.md`, `.agents/skills/shadcn/mcp.md`
+
+2. **Next.js best practices skill** → `.agents/skills/next-best-practices/SKILL.md`
+   - Also read all companion files in `.agents/skills/next-best-practices/` that are relevant to the task (directives, async-patterns, data-patterns, error-handling, suspense-boundaries, rsc-boundaries, hydration-error, etc.)
+
+These skills override any general knowledge you have about shadcn/ui and Next.js. Do not guess — read them first.
 
 ---
 
