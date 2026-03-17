@@ -22,6 +22,11 @@ export interface PaginationParams {
   search?: string
 }
 
+export interface ProgramPaginationParams extends PaginationParams {
+  dateFrom?: string
+  dateTo?: string
+}
+
 export interface Muscle {
   id: string
   created_at: string
@@ -334,9 +339,15 @@ export function deleteExercise(id: string, locale: string) {
 
 // ─── Programs ────────────────────────────────────────────────────────────────
 
-export function getPrograms(params: PaginationParams, locale: string) {
+export function getPrograms(params: ProgramPaginationParams, locale: string) {
   return workoutApiFetch<PaginatedResponse<Program>>(
-    `/training/programs${qs({ page: params.page ?? 1, limit: params.limit ?? 20, search: params.search })}`,
+    `/training/programs${qs({
+      page: params.page ?? 1,
+      limit: params.limit ?? 20,
+      search: params.search,
+      dateFrom: params.dateFrom,
+      dateTo: params.dateTo,
+    })}`,
     locale,
   )
 }

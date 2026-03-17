@@ -142,7 +142,10 @@
     "startedAt": "התחיל",
     "endedAt": "הסתיים",
     "notes": "הערות",
-    "sets": "סטים"
+    "sets": "סטים",
+    "allSessions": "כל הסשנים",
+    "clearDate": "נקה",
+    "dayEmpty": "אין סשנים ביום זה"
   },
   "train": {
     "title": "אימון",

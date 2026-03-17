@@ -10,18 +10,18 @@ import {
   updateProgram,
   deleteProgram,
   generateSchedule,
-  type PaginationParams,
+  type ProgramPaginationParams,
 } from '@/lib/api/workout'
 
 export const programKeys = {
   all: ['programs'] as const,
-  list: (params: PaginationParams) => [...programKeys.all, 'list', params] as const,
-  infinite: (params: PaginationParams) => [...programKeys.all, 'infinite', params] as const,
+  list: (params: ProgramPaginationParams) => [...programKeys.all, 'list', params] as const,
+  infinite: (params: ProgramPaginationParams) => [...programKeys.all, 'infinite', params] as const,
   detail: (id: string) => [...programKeys.all, 'detail', id] as const,
   data: (id: string) => [...programKeys.all, 'data', id] as const,
 }
 
-export function usePrograms(params: PaginationParams = {}) {
+export function usePrograms(params: ProgramPaginationParams = {}) {
   const locale = useLocale()
   return useQuery({
     queryKey: programKeys.list(params),
@@ -29,7 +29,7 @@ export function usePrograms(params: PaginationParams = {}) {
   })
 }
 
-export function useInfinitePrograms(params: Omit<PaginationParams, 'page'> = {}) {
+export function useInfinitePrograms(params: Omit<ProgramPaginationParams, 'page'> = {}) {
   const locale = useLocale()
   return useInfiniteQuery({
     queryKey: programKeys.infinite(params),

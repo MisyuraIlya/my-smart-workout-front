@@ -37,6 +37,15 @@ export function useUpcomingSessions(from: string, to: string) {
   })
 }
 
+export function useSessionsForMonth(from: string, to: string) {
+  const locale = useLocale()
+  return useQuery({
+    queryKey: sessionKeys.list({ from, to, limit: 100 }),
+    queryFn: () => getSessions({ from, to, limit: 100, page: 1 }, locale),
+    enabled: !!from && !!to,
+  })
+}
+
 export function useSessions(params: SessionListParams = {}) {
   const locale = useLocale()
   return useQuery({

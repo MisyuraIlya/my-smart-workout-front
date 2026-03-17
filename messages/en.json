@@ -142,7 +142,10 @@
     "startedAt": "Started",
     "endedAt": "Finished",
     "notes": "Notes",
-    "sets": "Sets"
+    "sets": "Sets",
+    "allSessions": "All Sessions",
+    "clearDate": "Clear",
+    "dayEmpty": "No sessions on this day"
   },
   "train": {
     "title": "Training",

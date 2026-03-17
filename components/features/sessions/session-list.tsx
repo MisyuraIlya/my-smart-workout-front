@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 
-export function SessionList() {
+export function SessionList({ showTitle = true }: { showTitle?: boolean }) {
   const t = useTranslations('sessions')
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteSessions({ limit: 20 })
@@ -53,7 +53,7 @@ export function SessionList() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t('title')}</h1>
+      {showTitle && <h1 className="text-2xl font-bold">{t('title')}</h1>}
 
       {items.length === 0 ? (
         <Empty>
