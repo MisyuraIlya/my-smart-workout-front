@@ -1,9 +1,11 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
+import { SearchIcon } from 'lucide-react'
 
 import {
   workoutExerciseSchema,
@@ -11,7 +13,6 @@ import {
 } from '@/lib/validations/workout-exercise.schema'
 import { useCreateWorkoutExercise } from '@/lib/hooks/use-workouts'
 import { useExercises } from '@/lib/hooks/use-exercises'
-import type { WorkoutExercise } from '@/lib/api/workout'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,7 +37,15 @@ interface Props {
 export function WorkoutExerciseForm({ workoutId, currentCount, onSuccess }: Props) {
   const t = useTranslations('exercises')
   const tc = useTranslations('common')
-  const { data: exercises } = useExercises({ limit: 200 })
+  const [searchInput, setSearchInput] = useState('')
+  const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSearch(searchInput), 300)
+    return () => clearTimeout(timer)
+  }, [searchInput])
+
+  const { data: exercises } = useExercises({ limit: 30, search: search || undefined })
   const createMutation = useCreateWorkoutExercise()
 
   const form = useForm<WorkoutExerciseFormValues>({
@@ -72,6 +81,15 @@ export function WorkoutExerciseForm({ workoutId, currentCount, onSuccess }: Prop
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error || undefined}>
                 <FieldLabel>{t('name')}</FieldLabel>
+                <div className="relative">
+                  <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    className="pl-9"
+                    placeholder={tc('search')}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                  />
+                </div>
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
                     <SelectValue placeholder={tc('search')} />

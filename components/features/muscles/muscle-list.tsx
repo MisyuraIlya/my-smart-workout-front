@@ -1,25 +1,38 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { PlusIcon } from 'lucide-react'
+import { PlusIcon, SearchIcon } from 'lucide-react'
 
-import { useMuscles, useDeleteMuscle } from '@/lib/hooks/use-muscles'
+import { useInfiniteMuscles, useDeleteMuscle } from '@/lib/hooks/use-muscles'
 import { MuscleForm } from './muscle-form'
 import { MuscleCard } from './muscle-card'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from '@/components/ui/spinner'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 
 export function MuscleList() {
   const t = useTranslations('muscles')
   const tc = useTranslations('common')
-  const { data, isLoading } = useMuscles({ limit: 100 })
-  const deleteMutation = useDeleteMuscle()
   const [createOpen, setCreateOpen] = useState(false)
+  const [searchInput, setSearchInput] = useState('')
+  const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSearch(searchInput), 300)
+    return () => clearTimeout(timer)
+  }, [searchInput])
+
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useInfiniteMuscles({ search: search || undefined })
+  const deleteMutation = useDeleteMuscle()
+
+  const items = data?.pages.flatMap((p) => p.items) ?? []
 
   async function handleDelete(id: string) {
     try {
@@ -27,16 +40,6 @@ export function MuscleList() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : tc('error'))
     }
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-3">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-14 w-full rounded-lg" />
-        ))}
-      </div>
-    )
   }
 
   return (
@@ -63,24 +66,53 @@ export function MuscleList() {
         </Drawer>
       </div>
 
-      {!data?.items.length ? (
+      <div className="relative">
+        <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          className="pl-9"
+          placeholder={tc('search')}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+      </div>
+
+      {isLoading ? (
+        <div className="flex flex-col gap-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-14 w-full rounded-lg" />
+          ))}
+        </div>
+      ) : items.length === 0 ? (
         <Empty>
           <EmptyHeader>
-            <EmptyTitle>{t('empty')}</EmptyTitle>
-            <EmptyDescription>{t('emptyDescription')}</EmptyDescription>
+            <EmptyTitle>{search ? tc('noResults') : t('empty')}</EmptyTitle>
+            {!search && <EmptyDescription>{t('emptyDescription')}</EmptyDescription>}
           </EmptyHeader>
-          <EmptyContent>
-            <Button onClick={() => setCreateOpen(true)}>
-              <PlusIcon data-icon="inline-start" />
-              {t('create')}
-            </Button>
-          </EmptyContent>
+          {!search && (
+            <EmptyContent>
+              <Button onClick={() => setCreateOpen(true)}>
+                <PlusIcon data-icon="inline-start" />
+                {t('create')}
+              </Button>
+            </EmptyContent>
+          )}
         </Empty>
       ) : (
         <div className="flex flex-col gap-2">
-          {data.items.map((muscle) => (
+          {items.map((muscle) => (
             <MuscleCard key={muscle.id} muscle={muscle} onDelete={handleDelete} />
           ))}
+          {hasNextPage && (
+            <Button
+              variant="outline"
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              className="mt-2"
+            >
+              {isFetchingNextPage && <Spinner data-icon="inline-start" />}
+              {tc('loadMore')}
+            </Button>
+          )}
         </div>
       )}
     </div>

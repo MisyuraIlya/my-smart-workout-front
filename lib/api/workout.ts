@@ -19,6 +19,7 @@ export interface PaginatedResponse<T> {
 export interface PaginationParams {
   page?: number
   limit?: number
+  search?: string
 }
 
 export interface Muscle {
@@ -219,7 +220,7 @@ function qs(params: Record<string, string | number | undefined>) {
 
 export function getMuscles(params: PaginationParams, locale: string) {
   return workoutApiFetch<PaginatedResponse<Muscle>>(
-    `/training/muscles${qs({ page: params.page ?? 1, limit: params.limit ?? 50 })}`,
+    `/training/muscles${qs({ page: params.page ?? 1, limit: params.limit ?? 20, search: params.search })}`,
     locale,
   )
 }
@@ -251,7 +252,7 @@ export function getExercises(
   locale: string,
 ) {
   return workoutApiFetch<PaginatedResponse<Exercise>>(
-    `/training/exercises${qs({ page: params.page ?? 1, limit: params.limit ?? 50, muscle_id: params.muscle_id })}`,
+    `/training/exercises${qs({ page: params.page ?? 1, limit: params.limit ?? 20, muscle_id: params.muscle_id, search: params.search })}`,
     locale,
   )
 }
@@ -303,7 +304,7 @@ export function deleteExercise(id: string, locale: string) {
 
 export function getPrograms(params: PaginationParams, locale: string) {
   return workoutApiFetch<PaginatedResponse<Program>>(
-    `/training/programs${qs({ page: params.page ?? 1, limit: params.limit ?? 20 })}`,
+    `/training/programs${qs({ page: params.page ?? 1, limit: params.limit ?? 20, search: params.search })}`,
     locale,
   )
 }
@@ -365,7 +366,7 @@ export function getProgramData(id: string, locale: string) {
 
 export function getWorkouts(params: PaginationParams & { program_id?: string }, locale: string) {
   return workoutApiFetch<PaginatedResponse<Workout>>(
-    `/training/workouts${qs({ page: params.page ?? 1, limit: params.limit ?? 20, program_id: params.program_id })}`,
+    `/training/workouts${qs({ page: params.page ?? 1, limit: params.limit ?? 20, program_id: params.program_id, search: params.search })}`,
     locale,
   )
 }

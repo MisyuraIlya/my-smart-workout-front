@@ -134,6 +134,13 @@
   - `components/features/programs/program-list.tsx` — create program
   - `components/features/programs/program-detail.tsx` — edit program, edit workout, add exercise to workout, add workout per day
 - [x] Generate Schedule button on program detail page is now a sticky bottom bar (fixed above bottom nav) — always visible during program setup flow, disabled until at least one workout exists
+- [x] Add search + infinite scroll (Load more) to exercises, muscles, programs list pages
+  - Added `search` param to `PaginationParams` — passed as `?search=` query param by muscles, exercises, programs, workouts API functions
+  - Added `useInfiniteExercises`, `useInfiniteMuscles`, `useInfinitePrograms` hooks using `useInfiniteQuery` (page-based, `getNextPageParam` from `meta.has_next`)
+  - `exercise-list`, `muscle-list`, `program-list` — replaced static `useQuery` with infinite hooks; added debounced (300ms) search input with `SearchIcon`; "Load more" button appears when `hasNextPage`; empty state shows "No results" vs "Nothing here yet" depending on active search
+  - `workout-exercise-form` exercise picker — replaced `limit: 200` with `limit: 30` + debounced search input above the Select, filters exercises via API
+  - Added `common.loadMore` to `en.json`, `ru.json`, `he.json`
+
 - [x] Refactor program detail page to use single `GET /training/programs/{id}/program-data` endpoint — replaces N+1 fetches (program + workouts list + per-workout exercises) with one request that returns program, workouts, and exercises with images in a single response
   - Added `ProgramWorkoutExercise`, `ProgramWorkout`, `ProgramData` types to `lib/api/workout.ts`
   - Added `getProgramData` API function

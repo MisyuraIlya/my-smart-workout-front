@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import {
   getPrograms,
@@ -16,6 +16,7 @@ import {
 export const programKeys = {
   all: ['programs'] as const,
   list: (params: PaginationParams) => [...programKeys.all, 'list', params] as const,
+  infinite: (params: PaginationParams) => [...programKeys.all, 'infinite', params] as const,
   detail: (id: string) => [...programKeys.all, 'detail', id] as const,
   data: (id: string) => [...programKeys.all, 'data', id] as const,
 }
@@ -25,6 +26,17 @@ export function usePrograms(params: PaginationParams = {}) {
   return useQuery({
     queryKey: programKeys.list(params),
     queryFn: () => getPrograms(params, locale),
+  })
+}
+
+export function useInfinitePrograms(params: Omit<PaginationParams, 'page'> = {}) {
+  const locale = useLocale()
+  return useInfiniteQuery({
+    queryKey: programKeys.infinite(params),
+    queryFn: ({ pageParam }) => getPrograms({ ...params, page: pageParam as number }, locale),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.has_next ? lastPage.meta.page + 1 : undefined,
   })
 }
 

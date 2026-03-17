@@ -15,7 +15,8 @@
     "add": "הוסף",
     "remove": "הסר",
     "search": "חיפוש",
-    "noResults": "לא נמצאו תוצאות"
+    "noResults": "לא נמצאו תוצאות",
+    "loadMore": "טען עוד"
   },
   "auth": {
     "login": "התחבר",
