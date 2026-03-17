@@ -154,6 +154,7 @@
     "notes": "Notes",
     "done": "Done",
     "targetReps": "Target: {reps} reps",
+    "sessionInProgress": "Session in progress",
     "noActiveSession": "No active session",
     "noActiveSessionDescription": "Start a training session from the dashboard.",
     "sessionComplete": "Session complete!"

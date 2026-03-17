@@ -196,6 +196,12 @@
 - [x] Fix Generate Schedule button making unwanted PUT request after POST schedule
   - `components/features/programs/program-detail.tsx` — removed `updateProgram.mutateAsync({ status: 'active' })` call that fired after schedule generation; backend `PUT /training/programs/{id}` requires `name` and was erroring with `"name is required"`; setting status to active post-schedule is not needed, so the entire second request was dropped
 
+- [x] Add floating "Active Session" banner — return-to-train UX when navigating away from `/train`
+  - `components/shared/active-session-banner.tsx` — fixed pill above the bottom nav (`bottom-16`); shows pulsing dot + "Session in progress" label + live elapsed timer; tapping navigates to `/train`; hidden when already on `/train`; only renders when `sessionId` is set in train store
+  - Moved timer interval ownership from `TrainHero` to `ActiveSessionBanner` — `TrainHero` was clearing the interval on unmount (navigating away from dashboard stopped the timer); banner lives in the app layout so the interval now runs for the full duration of the session regardless of which page is active
+  - `components/features/dashboard/train-hero.tsx` — removed `setInterval` / `useEffect` for timer; now just reads `elapsedSeconds` from the store
+  - `app/[locale]/(app)/layout.tsx` — added `<ActiveSessionBanner />`; bumped bottom padding from `pb-20` to `pb-32` to clear both the nav bar and the banner
+
 ---
 
 ## Decisions
@@ -207,6 +213,7 @@
 - `(app)/layout.tsx` uses `AuthGuard` client component for redirect-on-no-token pattern
 - React Query hooks call `useLocale()` at hook level, pass locale into API functions as closure
 - Train store persists only `sessionId` + `startedAt`; `elapsedSeconds` recomputed on mount from `startedAt`
+- `ActiveSessionBanner` (in app layout) owns the timer interval — `TrainHero` only reads `elapsedSeconds` from the store; interval survives navigation
 
 ---
 

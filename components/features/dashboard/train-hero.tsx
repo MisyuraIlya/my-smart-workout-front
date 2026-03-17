@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { DumbbellIcon, TimerIcon } from 'lucide-react'
@@ -24,26 +23,12 @@ export function TrainHero() {
   const t = useTranslations('dashboard')
   const tc = useTranslations('common')
   const router = useRouter()
-  const { sessionId, startedAt, elapsedSeconds, startSession, finishSession, tickTimer } =
-    useTrainStore()
+  const { sessionId, elapsedSeconds, startSession, finishSession } = useTrainStore()
   const startMutation = useStartTrain()
   const finishMutation = useFinishTrain()
 
-  // Restore elapsed time on mount if session was active
-  useEffect(() => {
-    if (startedAt && sessionId) {
-      const elapsed = Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000)
-      useTrainStore.setState({ elapsedSeconds: Math.max(0, elapsed) })
-    }
-  }, [startedAt, sessionId])
-
-  // Tick timer every second when session is active
-  useEffect(() => {
-    if (!sessionId) return
-    const interval = setInterval(tickTimer, 1000)
-    useTrainStore.setState({ timerInterval: interval })
-    return () => clearInterval(interval)
-  }, [sessionId, tickTimer])
+  // Timer interval is owned by ActiveSessionBanner in the layout (always mounted).
+  // TrainHero just reads elapsedSeconds from the store.
 
   async function handleStart() {
     try {

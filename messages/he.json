@@ -154,6 +154,7 @@
     "notes": "הערות",
     "done": "בוצע",
     "targetReps": "יעד: {reps} חזרות",
+    "sessionInProgress": "אימון פעיל",
     "noActiveSession": "אין אימון פעיל",
     "noActiveSessionDescription": "התחל אימון מדף הבית.",
     "sessionComplete": "האימון הושלם!"

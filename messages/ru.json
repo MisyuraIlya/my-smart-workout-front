@@ -154,6 +154,7 @@
     "notes": "Заметки",
     "done": "Готово",
     "targetReps": "Цель: {reps} повт.",
+    "sessionInProgress": "Тренировка идёт",
     "noActiveSession": "Нет активной тренировки",
     "noActiveSessionDescription": "Начните тренировку с главной страницы.",
     "sessionComplete": "Тренировка завершена!"
