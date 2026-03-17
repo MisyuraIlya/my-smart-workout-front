@@ -27,3 +27,9 @@ Start with the next uncompleted task in my-smart-workout-front/PROGRESS.md.
 When done with a task, mark it as done in my-smart-workout-front/PROGRESS.md before moving to the next one.
 `
 
+
+`
+we work on the app my-smart-workout-front/** 
+Read my-smart-workout-front/CLAUDE.md and my-smart-workout-front/PROGRESS.md
+i use skills my-smart-workout-front/.agents/skills/**
+`

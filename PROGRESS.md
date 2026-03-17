@@ -134,6 +134,13 @@
   - `components/features/programs/program-list.tsx` — create program
   - `components/features/programs/program-detail.tsx` — edit program, edit workout, add exercise to workout, add workout per day
 - [x] Generate Schedule button on program detail page is now a sticky bottom bar (fixed above bottom nav) — always visible during program setup flow, disabled until at least one workout exists
+- [x] Refactor program detail page to use single `GET /training/programs/{id}/program-data` endpoint — replaces N+1 fetches (program + workouts list + per-workout exercises) with one request that returns program, workouts, and exercises with images in a single response
+  - Added `ProgramWorkoutExercise`, `ProgramWorkout`, `ProgramData` types to `lib/api/workout.ts`
+  - Added `getProgramData` API function
+  - Added `programKeys.data(id)` cache key + `useProgramData` hook to `lib/hooks/use-programs.ts`
+  - `useCreateWorkout`, `useDeleteWorkout`, `useCreateWorkoutExercise`, `useDeleteWorkoutExercise` in `use-workouts.ts` now also invalidate `['programs']` so `useProgramData` cache refreshes after mutations
+  - `program-detail.tsx` — replaced `useProgram` + `useWorkouts` + per-workout `useWorkoutExercises` with single `useProgramData`; exercises passed as props, no child-level fetchers
+  - `workout-exercise-item.tsx` — updated to `ProgramWorkoutExercise` type; now shows exercise thumbnail (Minio via `NEXT_PUBLIC_STORAGE_URL`) and difficulty badge
 
 ---
 

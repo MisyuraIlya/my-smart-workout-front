@@ -5,9 +5,9 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { PlusIcon, Trash2Icon, CalendarIcon, PencilIcon } from 'lucide-react'
 
-import { useProgram, useGenerateSchedule, useUpdateProgram } from '@/lib/hooks/use-programs'
-import { useWorkouts, useWorkoutExercises, useDeleteWorkout, useDeleteWorkoutExercise } from '@/lib/hooks/use-workouts'
-import type { Workout } from '@/lib/api/workout'
+import { useProgramData, useGenerateSchedule, useUpdateProgram } from '@/lib/hooks/use-programs'
+import { useDeleteWorkout, useDeleteWorkoutExercise } from '@/lib/hooks/use-workouts'
+import type { ProgramWorkout } from '@/lib/api/workout'
 import { WorkoutForm } from './workout-form'
 import { WorkoutExerciseForm } from './workout-exercise-form'
 import { ProgramForm } from './program-form'
@@ -34,7 +34,7 @@ import { Spinner } from '@/components/ui/spinner'
 const DAY_KEYS = ['1', '2', '3', '4', '5', '6', '7'] as const
 
 interface WorkoutCardProps {
-  workout: Workout
+  workout: ProgramWorkout
   programId: string
 }
 
@@ -42,13 +42,10 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
   const tc = useTranslations('common')
   const t = useTranslations('workouts')
   const te = useTranslations('exercises')
-  const { data: wxData } = useWorkoutExercises(workout.id)
   const deleteWE = useDeleteWorkoutExercise()
   const deleteWorkout = useDeleteWorkout()
   const [addExOpen, setAddExOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
-
-  const exercises = wxData?.items ?? []
 
   return (
     <div className="flex flex-col gap-2 rounded-lg border bg-card p-4">
@@ -71,7 +68,14 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
                   <WorkoutForm
                     programId={programId}
                     dayNo={workout.day_no}
-                    workout={workout}
+                    workout={{
+                      id: workout.id,
+                      created_at: workout.created_at,
+                      updated_at: workout.updated_at ?? '',
+                      name: workout.name,
+                      day_no: workout.day_no,
+                      program_id: programId,
+                    }}
                     onSuccess={() => setEditOpen(false)}
                   />
                 </div>
@@ -106,13 +110,13 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
         </div>
       </div>
 
-      {exercises.length > 0 && (
+      {workout.exercises.length > 0 && (
         <div className="flex flex-col gap-1">
-          {exercises.map((we) => (
+          {workout.exercises.map((we) => (
             <WorkoutExerciseItem
-              key={we.id}
+              key={we.workout_exercise_id}
               we={we}
-              onDelete={(id, workoutId) => deleteWE.mutate({ id, workout_id: workoutId })}
+              onDelete={(id) => deleteWE.mutate({ id, workout_id: workout.id })}
             />
           ))}
         </div>
@@ -133,7 +137,7 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
             <div className="mt-2">
               <WorkoutExerciseForm
                 workoutId={workout.id}
-                currentCount={exercises.length}
+                currentCount={workout.exercises.length}
                 onSuccess={() => setAddExOpen(false)}
               />
             </div>
@@ -152,14 +156,13 @@ export function ProgramDetail({ programId }: Props) {
   const t = useTranslations('programs')
   const tw = useTranslations('workouts')
   const tc = useTranslations('common')
-  const { data: program, isLoading } = useProgram(programId)
-  const { data: workoutsData } = useWorkouts({ program_id: programId, limit: 20 })
+  const { data: program, isLoading } = useProgramData(programId)
   const generateSchedule = useGenerateSchedule()
   const updateProgram = useUpdateProgram()
   const [addWorkoutDay, setAddWorkoutDay] = useState<number | null>(null)
   const [editOpen, setEditOpen] = useState(false)
 
-  const workouts = workoutsData?.items ?? []
+  const workouts = program?.workouts ?? []
 
   if (isLoading) {
     return (
@@ -216,7 +219,10 @@ export function ProgramDetail({ programId }: Props) {
                 <DrawerTitle>{t('edit')}</DrawerTitle>
               </DrawerHeader>
               <div className="mt-2">
-                <ProgramForm program={program} onSuccess={() => setEditOpen(false)} />
+                <ProgramForm
+                  program={program}
+                  onSuccess={() => setEditOpen(false)}
+                />
               </div>
             </div>
           </DrawerContent>

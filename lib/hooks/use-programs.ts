@@ -5,6 +5,7 @@ import { useLocale } from 'next-intl'
 import {
   getPrograms,
   getProgramById,
+  getProgramData,
   createProgram,
   updateProgram,
   deleteProgram,
@@ -16,6 +17,7 @@ export const programKeys = {
   all: ['programs'] as const,
   list: (params: PaginationParams) => [...programKeys.all, 'list', params] as const,
   detail: (id: string) => [...programKeys.all, 'detail', id] as const,
+  data: (id: string) => [...programKeys.all, 'data', id] as const,
 }
 
 export function usePrograms(params: PaginationParams = {}) {
@@ -80,6 +82,15 @@ export function useDeleteProgram() {
   return useMutation({
     mutationFn: (id: string) => deleteProgram(id, locale),
     onSuccess: () => qc.invalidateQueries({ queryKey: programKeys.all }),
+  })
+}
+
+export function useProgramData(id: string) {
+  const locale = useLocale()
+  return useQuery({
+    queryKey: programKeys.data(id),
+    queryFn: () => getProgramData(id, locale),
+    enabled: !!id,
   })
 }
 

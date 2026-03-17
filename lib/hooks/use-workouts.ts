@@ -55,7 +55,10 @@ export function useCreateWorkout() {
   return useMutation({
     mutationFn: (data: { name: string; day_no: number; program_id: string }) =>
       createWorkout(data, locale),
-    onSuccess: () => qc.invalidateQueries({ queryKey: workoutKeys.all }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: workoutKeys.all })
+      qc.invalidateQueries({ queryKey: ['programs'] })
+    },
   })
 }
 
@@ -82,7 +85,10 @@ export function useDeleteWorkout() {
   const locale = useLocale()
   return useMutation({
     mutationFn: (id: string) => deleteWorkout(id, locale),
-    onSuccess: () => qc.invalidateQueries({ queryKey: workoutKeys.all }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: workoutKeys.all })
+      qc.invalidateQueries({ queryKey: ['programs'] })
+    },
   })
 }
 
@@ -100,6 +106,7 @@ export function useCreateWorkoutExercise() {
     }) => createWorkoutExercise(data, locale),
     onSuccess: (_data, { workout_id }) => {
       qc.invalidateQueries({ queryKey: workoutKeys.exercises(workout_id) })
+      qc.invalidateQueries({ queryKey: ['programs'] })
     },
   })
 }
@@ -136,6 +143,7 @@ export function useDeleteWorkoutExercise() {
       deleteWorkoutExercise(id, locale),
     onSuccess: (_data, { workout_id }) => {
       qc.invalidateQueries({ queryKey: workoutKeys.exercises(workout_id) })
+      qc.invalidateQueries({ queryKey: ['programs'] })
     },
   })
 }

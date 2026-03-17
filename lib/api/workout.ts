@@ -181,6 +181,31 @@ export interface ScheduleResult {
   sets_created: number
 }
 
+export interface ProgramWorkoutExercise {
+  workout_exercise_id: string
+  exercise_id: string
+  name: string
+  difficulty?: 'beginner' | 'intermediate' | 'advanced'
+  image?: ExerciseImage
+  position: number
+  sets: number
+  target_reps: number
+  rest_seconds?: number
+}
+
+export interface ProgramWorkout {
+  id: string
+  created_at: string
+  updated_at: string | null
+  name: string
+  day_no: 1 | 2 | 3 | 4 | 5 | 6 | 7
+  exercises: ProgramWorkoutExercise[]
+}
+
+export interface ProgramData extends Program {
+  workouts: ProgramWorkout[]
+}
+
 // ─── Muscles ────────────────────────────────────────────────────────────────
 
 function qs(params: Record<string, string | number | undefined>) {
@@ -330,6 +355,10 @@ export function generateSchedule(id: string, locale: string) {
   return workoutApiFetch<ScheduleResult>(`/training/programs/${id}/schedule`, locale, {
     method: 'POST',
   })
+}
+
+export function getProgramData(id: string, locale: string) {
+  return workoutApiFetch<ProgramData>(`/training/programs/${id}/program-data`, locale)
 }
 
 // ─── Workouts ────────────────────────────────────────────────────────────────
