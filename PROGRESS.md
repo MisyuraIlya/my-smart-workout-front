@@ -180,6 +180,19 @@
 - [x] Sessions list date format — `scheduled_on` now displayed as `DD-MM-YYYY` instead of raw `YYYY-MM-DD`
   - `components/features/sessions/session-card.tsx` — string slice reshape (no `new Date()` to avoid timezone shift)
 
+- [x] Fix infinite scroll not fetching next page + duplicate key error on sessions/exercises/muscles/programs list pages
+  - **Root cause 1 (infinite scroll broken):** `IntersectionObserver` was created in a `useEffect` with `deps=[]` — sentinel `<div>` isn't in the DOM yet on first run (items still loading), so the observer was set up on `null` and never triggered. Fix: replaced `useEffect`-based observer setup with a **callback ref** (`sentinelRef = useCallback((el) => { ... }, [])`) so the observer is created exactly when the sentinel mounts into the DOM.
+  - **Root cause 2 (duplicate keys):** React Strict Mode double-invokes callback refs (mount → unmount → remount); on each mount the observer fires immediately (sentinel already in viewport), calling `fetchNextPage()` twice before `isFetchingNextPage` could update via `useEffect`. Fix: added a synchronous `fetchingRef` guard — set to `true` immediately when `fetchNextPage()` is called, reset to `false` via `useEffect` when `isFetchingNextPage` becomes `false`. Also moved `hasNextPageRef`/`fetchNextPageRef` sync from `useEffect` to **direct assignment during render** (eliminates async gap). Applied to all 4 list components: `exercise-list`, `muscle-list`, `program-list`, `session-list`.
+  - **Root cause 3 (backend duplicate items across pages):** All paginated list queries used `ORDER BY created_at DESC` without a tiebreaker. Since many rows share identical `created_at` timestamps (bulk auto-generated sessions), PostgreSQL returns rows in non-deterministic order between queries — the boundary row at offset N appears in both page N and page N+1. Fix: added `id ASC` as secondary sort key to all 5 paginated backend queries.
+    - `my-smart-workout/internal/adapter/postgres/workout_session.go` — `ORDER BY created_at DESC, id ASC`
+    - `my-smart-workout/internal/adapter/postgres/muscle.go` — `ORDER BY m.created_at DESC, m.id ASC`
+    - `my-smart-workout/internal/adapter/postgres/program.go` — `ORDER BY p.created_at DESC, p.id ASC`
+    - `my-smart-workout/internal/adapter/postgres/exercise.go` — `ORDER BY e.created_at DESC, e.id ASC`
+    - `my-smart-workout/internal/adapter/postgres/workout.go` — `ORDER BY w.created_at DESC, w.id ASC`
+
+- [x] Add bottom padding to app layout so list content is not hidden behind fixed bottom navigation bar
+  - `app/[locale]/(app)/layout.tsx` — wrapped `{children}` in `<div className="pb-20">` (80px clears the ~56px nav bar with breathing room); applies to all app pages automatically
+
 ---
 
 ## Decisions
