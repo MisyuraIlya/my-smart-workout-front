@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { PlusIcon, SearchIcon } from 'lucide-react'
@@ -22,6 +22,7 @@ export function ProgramList() {
   const [createOpen, setCreateOpen] = useState(false)
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
+  const sentinelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => setSearch(searchInput), 300)
@@ -33,6 +34,29 @@ export function ProgramList() {
   const deleteMutation = useDeleteProgram()
 
   const items = data?.pages.flatMap((p) => p.items) ?? []
+
+  const hasNextPageRef = useRef(hasNextPage)
+  const isFetchingRef = useRef(isFetchingNextPage)
+  const fetchNextPageRef = useRef(fetchNextPage)
+  useEffect(() => { hasNextPageRef.current = hasNextPage }, [hasNextPage])
+  useEffect(() => { isFetchingRef.current = isFetchingNextPage }, [isFetchingNextPage])
+  useEffect(() => { fetchNextPageRef.current = fetchNextPage }, [fetchNextPage])
+
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPageRef.current && !isFetchingRef.current) {
+          fetchNextPageRef.current()
+        }
+      },
+      { threshold: 0.1 },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function handleDelete(id: string) {
     try {
@@ -102,16 +126,11 @@ export function ProgramList() {
           {items.map((program) => (
             <ProgramCard key={program.id} program={program} onDelete={handleDelete} />
           ))}
-          {hasNextPage && (
-            <Button
-              variant="outline"
-              onClick={() => fetchNextPage()}
-              disabled={isFetchingNextPage}
-              className="mt-2"
-            >
-              {isFetchingNextPage && <Spinner data-icon="inline-start" />}
-              {tc('loadMore')}
-            </Button>
+          <div ref={sentinelRef} className="h-1" />
+          {isFetchingNextPage && (
+            <div className="flex justify-center py-4">
+              <Spinner />
+            </div>
           )}
         </div>
       )}

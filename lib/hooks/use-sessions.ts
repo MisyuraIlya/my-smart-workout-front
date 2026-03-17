@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useLocale } from 'next-intl'
 import {
   getSessions,
@@ -12,24 +12,36 @@ import {
   type PaginationParams,
 } from '@/lib/api/workout'
 
+type SessionListParams = PaginationParams & {
+  status?: 'planned' | 'in_progress' | 'done' | 'skipped'
+  from?: string
+  to?: string
+}
+
 export const sessionKeys = {
   all: ['sessions'] as const,
   list: (params: object) => [...sessionKeys.all, 'list', params] as const,
+  infinite: (params: object) => [...sessionKeys.all, 'infinite', params] as const,
   detail: (id: string) => [...sessionKeys.all, 'detail', id] as const,
   sets: (session_id: string) => [...sessionKeys.all, 'sets', session_id] as const,
 }
 
-export function useSessions(
-  params: PaginationParams & {
-    status?: 'planned' | 'in_progress' | 'done' | 'skipped'
-    from?: string
-    to?: string
-  } = {},
-) {
+export function useSessions(params: SessionListParams = {}) {
   const locale = useLocale()
   return useQuery({
     queryKey: sessionKeys.list(params),
     queryFn: () => getSessions(params, locale),
+  })
+}
+
+export function useInfiniteSessions(params: Omit<SessionListParams, 'page'> = {}) {
+  const locale = useLocale()
+  return useInfiniteQuery({
+    queryKey: sessionKeys.infinite(params),
+    queryFn: ({ pageParam }) => getSessions({ ...params, page: pageParam as number }, locale),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.has_next ? lastPage.meta.page + 1 : undefined,
   })
 }
 
