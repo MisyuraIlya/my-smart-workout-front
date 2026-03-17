@@ -1,15 +1,17 @@
 'use client'
 
+import Image from 'next/image'
 import { useTranslations, useFormatter } from 'next-intl'
 
-import { useSession, useSessionSets } from '@/lib/hooks/use-sessions'
-import type { WorkoutSessionSet } from '@/lib/api/workout'
+import { useSessionData } from '@/lib/hooks/use-sessions'
+import type { SessionDataSet } from '@/lib/api/workout'
 import { SessionSetRow } from './session-set-row'
 
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
-import { ScrollArea } from '@/components/ui/scroll-area'
+
+const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL ?? 'http://localhost:9000'
 
 const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
   planned: 'outline',
@@ -18,18 +20,25 @@ const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive' | 
   skipped: 'destructive',
 }
 
+interface ExerciseGroup {
+  name: string
+  difficulty?: 'beginner' | 'intermediate' | 'advanced'
+  imageUrl?: string
+  sets: SessionDataSet[]
+}
+
 interface Props {
   sessionId: string
 }
 
 export function SessionDetail({ sessionId }: Props) {
   const t = useTranslations('sessions')
+  const te = useTranslations('exercises')
   const tt = useTranslations('train')
   const format = useFormatter()
-  const { data: session, isLoading: sessionLoading } = useSession(sessionId)
-  const { data: setsData, isLoading: setsLoading } = useSessionSets(sessionId)
+  const { data: session, isLoading } = useSessionData(sessionId)
 
-  if (sessionLoading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col gap-4">
         <Skeleton className="h-8 w-48" />
@@ -41,13 +50,20 @@ export function SessionDetail({ sessionId }: Props) {
 
   if (!session) return null
 
-  const sets = setsData?.items ?? []
+  const sets = session.sets
 
-  // Group sets by exercise
-  const grouped = sets.reduce<Record<string, WorkoutSessionSet[]>>((acc, set) => {
-    const key = set.exercise_id
-    if (!acc[key]) acc[key] = []
-    acc[key].push(set)
+  const grouped = sets.reduce<Record<string, ExerciseGroup>>((acc, set) => {
+    if (!acc[set.exercise_id]) {
+      acc[set.exercise_id] = {
+        name: set.exercise_name,
+        difficulty: set.exercise_difficulty,
+        imageUrl: set.image
+          ? `${STORAGE_URL}/${set.image.bucket_name}/${set.image.storage_key}`
+          : undefined,
+        sets: [],
+      }
+    }
+    acc[set.exercise_id].sets.push(set)
     return acc
   }, {})
 
@@ -62,15 +78,22 @@ export function SessionDetail({ sessionId }: Props) {
           </Badge>
           <span className="text-sm text-muted-foreground">{session.scheduled_on}</span>
         </div>
-        {session.workout && <h1 className="text-2xl font-bold">{session.workout.name}</h1>}
         {session.started_at && (
           <p className="text-sm text-muted-foreground">
-            {t('startedAt')}: {format.dateTime(new Date(session.started_at), { dateStyle: 'medium', timeStyle: 'short' })}
+            {t('startedAt')}:{' '}
+            {format.dateTime(new Date(session.started_at), {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            })}
           </p>
         )}
         {session.ended_at && (
           <p className="text-sm text-muted-foreground">
-            {t('endedAt')}: {format.dateTime(new Date(session.ended_at), { dateStyle: 'medium', timeStyle: 'short' })}
+            {t('endedAt')}:{' '}
+            {format.dateTime(new Date(session.ended_at), {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            })}
           </p>
         )}
         {session.notes && (
@@ -87,31 +110,38 @@ export function SessionDetail({ sessionId }: Props) {
         </>
       )}
 
-      {setsLoading ? (
-        <div className="flex flex-col gap-2">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-12 w-full rounded-lg" />
-          ))}
-        </div>
-      ) : (
-        <ScrollArea className="h-[calc(100vh-18rem)]">
-          <div className="flex flex-col gap-6">
-            {Object.entries(grouped).map(([exerciseId, exerciseSets]) => {
-              const exercise = exerciseSets[0]?.exercise
-              return (
-                <div key={exerciseId} className="flex flex-col gap-2">
-                  <h3 className="font-semibold">
-                    {exercise?.name ?? exerciseId}
-                  </h3>
-                  {exerciseSets.map((set) => (
-                    <SessionSetRow key={set.id} set={set} />
-                  ))}
+      <div className="flex flex-col gap-6">
+        {Object.entries(grouped).map(([exerciseId, group]) => (
+          <div key={exerciseId} className="flex flex-col gap-2">
+            <div className="flex items-center gap-3">
+              {group.imageUrl ? (
+                <div className="relative size-12 shrink-0 overflow-hidden rounded-md">
+                  <Image
+                    src={group.imageUrl}
+                    alt={group.name}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
                 </div>
-              )
-            })}
+              ) : (
+                <div className="size-12 shrink-0 rounded-md bg-muted" />
+              )}
+              <div className="flex flex-col gap-1">
+                <h3 className="font-semibold leading-tight">{group.name}</h3>
+                {group.difficulty && (
+                  <Badge variant="secondary" className="w-fit text-xs">
+                    {te(`difficulty.${group.difficulty}`)}
+                  </Badge>
+                )}
+              </div>
+            </div>
+            {group.sets.map((set) => (
+              <SessionSetRow key={set.id} set={set} />
+            ))}
           </div>
-        </ScrollArea>
-      )}
+        ))}
+      </div>
     </div>
   )
 }

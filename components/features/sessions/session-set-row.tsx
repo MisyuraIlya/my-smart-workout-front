@@ -1,11 +1,11 @@
 'use client'
 
-import type { WorkoutSessionSet } from '@/lib/api/workout'
+import type { SessionDataSet } from '@/lib/api/workout'
 
 import { Badge } from '@/components/ui/badge'
 
 interface SessionSetRowProps {
-  set: WorkoutSessionSet
+  set: SessionDataSet
 }
 
 export function SessionSetRow({ set }: SessionSetRowProps) {

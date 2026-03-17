@@ -134,6 +134,9 @@
   - `components/features/programs/program-list.tsx` — create program
   - `components/features/programs/program-detail.tsx` — edit program, edit workout, add exercise to workout, add workout per day
 - [x] Generate Schedule button on program detail page is now a sticky bottom bar (fixed above bottom nav) — always visible during program setup flow, disabled until at least one workout exists
+- [x] Refactor session detail page to use single `GET /training/workout-sessions/{id}/session-data` endpoint
+  - `session-detail.tsx` — replaced `useSession` + `useSessionSets` with `useSessionData`; `sets` from `session.sets` (no pagination); removed `ScrollArea` (natural page scroll); exercise image thumbnail + difficulty badge shown per group; `exercise_name` used directly (no UUID fallback); `session-set-row.tsx` type updated from `WorkoutSessionSet` to `SessionDataSet`
+
 - [x] Refactor train page to use single `GET /training/workout-sessions/{id}/session-data` endpoint
   - Added `SessionDataSet`, `SessionData` types to `lib/api/workout.ts`; added `getSessionData` API function
   - Added `sessionKeys.sessionData(id)` cache key + `useSessionData` hook to `use-sessions.ts`
