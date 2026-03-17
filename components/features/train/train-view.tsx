@@ -3,13 +3,13 @@
 import { useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import Image from 'next/image'
 
 import { useTrainStore } from '@/lib/stores/train.store'
 import { useSessionData, useFinishTrain } from '@/lib/hooks/use-sessions'
 import type { SessionDataSet } from '@/lib/api/workout'
 import { useRouter, Link } from '@/i18n/navigation'
 import { SetRow } from './set-row'
+import { ClickableExerciseImage } from '@/components/shared/clickable-exercise-image'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -138,15 +138,7 @@ export function TrainView() {
               <div key={exerciseId} className="flex flex-col gap-2">
                 <div className="flex items-center gap-3">
                   {group.imageUrl ? (
-                    <div className="relative size-12 shrink-0 overflow-hidden rounded-md">
-                      <Image
-                        src={group.imageUrl}
-                        alt={group.name}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
+                    <ClickableExerciseImage src={group.imageUrl} alt={group.name} />
                   ) : (
                     <div className="size-12 shrink-0 rounded-md bg-muted" />
                   )}

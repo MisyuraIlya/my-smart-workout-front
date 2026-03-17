@@ -1,10 +1,10 @@
 'use client'
 
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { Trash2Icon } from 'lucide-react'
 
 import type { ProgramWorkoutExercise } from '@/lib/api/workout'
+import { ClickableExerciseImage } from '@/components/shared/clickable-exercise-image'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -27,9 +27,7 @@ export function WorkoutExerciseItem({ we, onDelete }: WorkoutExerciseItemProps) 
   return (
     <div className="flex items-center gap-3 rounded-md bg-muted/50 px-3 py-2 text-sm">
       {imgUrl ? (
-        <div className="relative size-10 shrink-0 overflow-hidden rounded-md">
-          <Image src={imgUrl} alt={we.name} fill className="object-cover" unoptimized />
-        </div>
+        <ClickableExerciseImage src={imgUrl} alt={we.name} sizeClass="size-10" />
       ) : (
         <div className="size-10 shrink-0 rounded-md bg-muted" />
       )}

@@ -1,11 +1,11 @@
 'use client'
 
-import Image from 'next/image'
 import { useTranslations, useFormatter } from 'next-intl'
 
 import { useSessionData } from '@/lib/hooks/use-sessions'
 import type { SessionDataSet } from '@/lib/api/workout'
 import { SessionSetRow } from './session-set-row'
+import { ClickableExerciseImage } from '@/components/shared/clickable-exercise-image'
 
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -115,15 +115,7 @@ export function SessionDetail({ sessionId }: Props) {
           <div key={exerciseId} className="flex flex-col gap-2">
             <div className="flex items-center gap-3">
               {group.imageUrl ? (
-                <div className="relative size-12 shrink-0 overflow-hidden rounded-md">
-                  <Image
-                    src={group.imageUrl}
-                    alt={group.name}
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                </div>
+                <ClickableExerciseImage src={group.imageUrl} alt={group.name} />
               ) : (
                 <div className="size-12 shrink-0 rounded-md bg-muted" />
               )}
