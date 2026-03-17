@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 
-import { useSessions } from '@/lib/hooks/use-sessions'
+import { useUpcomingSessions } from '@/lib/hooks/use-sessions'
 import type { WorkoutSession } from '@/lib/api/workout'
 
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -32,11 +32,10 @@ const DAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 export function UpcomingSessions() {
   const t = useTranslations('dashboard')
   const { from, to } = getNextTwoWeeks()
-  const { data, isLoading } = useSessions({ status: 'planned', from, to, limit: 50 })
-
+  const { data, isLoading } = useUpcomingSessions(from, to)
   const sessions = data?.items ?? []
   const sessionsByDate = sessions.reduce<Record<string, WorkoutSession>>((acc, s: WorkoutSession) => {
-    acc[s.scheduled_on] = s
+    acc[s.scheduled_on.slice(0, 10)] = s
     return acc
   }, {})
 

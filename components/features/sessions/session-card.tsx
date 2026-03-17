@@ -34,7 +34,7 @@ export function SessionCard({ session }: SessionCardProps) {
             {t(`status.${session.status}`)}
           </Badge>
           <span className="text-sm text-muted-foreground">
-            {session.scheduled_on}
+            {session.scheduled_on.slice(8, 10)}-{session.scheduled_on.slice(5, 7)}-{session.scheduled_on.slice(0, 4)}
           </span>
         </div>
         {session.workout && (

@@ -506,6 +506,13 @@ export function getSessions(
   )
 }
 
+export function getUpcomingSessions(from: string, to: string, locale: string) {
+  return workoutApiFetch<{ items: WorkoutSession[] }>(
+    `/training/workout-sessions/upcoming${qs({ from, to })}`,
+    locale,
+  )
+}
+
 export function getSessionById(id: string, locale: string) {
   return workoutApiFetch<WorkoutSession>(`/training/workout-sessions/${id}`, locale)
 }

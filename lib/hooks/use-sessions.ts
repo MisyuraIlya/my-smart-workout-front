@@ -4,6 +4,7 @@ import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tansta
 import { useLocale } from 'next-intl'
 import {
   getSessions,
+  getUpcomingSessions,
   getSessionById,
   getSessionData,
   startTrain,
@@ -26,6 +27,14 @@ export const sessionKeys = {
   detail: (id: string) => [...sessionKeys.all, 'detail', id] as const,
   sessionData: (id: string) => [...sessionKeys.all, 'sessionData', id] as const,
   sets: (session_id: string) => [...sessionKeys.all, 'sets', session_id] as const,
+}
+
+export function useUpcomingSessions(from: string, to: string) {
+  const locale = useLocale()
+  return useQuery({
+    queryKey: [...sessionKeys.all, 'upcoming', { from, to }] as const,
+    queryFn: () => getUpcomingSessions(from, to, locale),
+  })
 }
 
 export function useSessions(params: SessionListParams = {}) {
