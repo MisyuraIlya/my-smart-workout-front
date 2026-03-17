@@ -134,6 +134,13 @@
   - `components/features/programs/program-list.tsx` — create program
   - `components/features/programs/program-detail.tsx` — edit program, edit workout, add exercise to workout, add workout per day
 - [x] Generate Schedule button on program detail page is now a sticky bottom bar (fixed above bottom nav) — always visible during program setup flow, disabled until at least one workout exists
+- [x] Refactor train page to use single `GET /training/workout-sessions/{id}/session-data` endpoint
+  - Added `SessionDataSet`, `SessionData` types to `lib/api/workout.ts`; added `getSessionData` API function
+  - Added `sessionKeys.sessionData(id)` cache key + `useSessionData` hook to `use-sessions.ts`
+  - `useTrackSet` now also invalidates `sessionData` key so train view refreshes after each set is tracked
+  - `train-view.tsx` — replaced `useSession` + `useSessionSets` (2 requests) with single `useSessionData`; exercises grouped by `exercise_id` using embedded `exercise_name` + `exercise_difficulty` + `image`; exercise thumbnail (`next/image`, 48×48) and difficulty badge shown above each group's sets; date (`scheduled_on`) shown as subtitle instead of workout name
+  - `set-row.tsx` — updated prop type from `WorkoutSessionSet` to `SessionDataSet`; removed unused `targetReps` prop
+
 - [x] Add search + infinite scroll to exercises, muscles, programs, sessions list pages
   - Added `search` param to `PaginationParams` — passed as `?search=` query param by muscles, exercises, programs, workouts API functions
   - Added `useInfiniteExercises`, `useInfiniteMuscles`, `useInfinitePrograms` hooks using `useInfiniteQuery` (page-based, `getNextPageParam` from `meta.has_next`)

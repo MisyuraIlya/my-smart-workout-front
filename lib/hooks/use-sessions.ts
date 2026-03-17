@@ -5,6 +5,7 @@ import { useLocale } from 'next-intl'
 import {
   getSessions,
   getSessionById,
+  getSessionData,
   startTrain,
   finishTrain,
   getSessionSets,
@@ -23,6 +24,7 @@ export const sessionKeys = {
   list: (params: object) => [...sessionKeys.all, 'list', params] as const,
   infinite: (params: object) => [...sessionKeys.all, 'infinite', params] as const,
   detail: (id: string) => [...sessionKeys.all, 'detail', id] as const,
+  sessionData: (id: string) => [...sessionKeys.all, 'sessionData', id] as const,
   sets: (session_id: string) => [...sessionKeys.all, 'sets', session_id] as const,
 }
 
@@ -42,6 +44,15 @@ export function useInfiniteSessions(params: Omit<SessionListParams, 'page'> = {}
     initialPageParam: 1,
     getNextPageParam: (lastPage) =>
       lastPage.meta.has_next ? lastPage.meta.page + 1 : undefined,
+  })
+}
+
+export function useSessionData(id: string) {
+  const locale = useLocale()
+  return useQuery({
+    queryKey: sessionKeys.sessionData(id),
+    queryFn: () => getSessionData(id, locale),
+    enabled: !!id,
   })
 }
 
@@ -102,6 +113,7 @@ export function useTrackSet() {
     }) => trackSet(id, data, locale),
     onSuccess: (_data, { session_id }) => {
       qc.invalidateQueries({ queryKey: sessionKeys.sets(session_id) })
+      qc.invalidateQueries({ queryKey: sessionKeys.sessionData(session_id) })
     },
   })
 }

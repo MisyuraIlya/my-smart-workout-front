@@ -176,6 +176,38 @@ export interface ProgramProgressStatistics {
   total_hours: number
 }
 
+export interface SessionDataSet {
+  id: string
+  created_at: string
+  updated_at: string | null
+  set_number: number
+  reps: number
+  rest_seconds?: number | null
+  notes?: string | null
+  weight?: number | null
+  rpe?: number | null
+  is_done: boolean
+  session_id: string
+  exercise_id: string
+  exercise_name: string
+  exercise_difficulty?: 'beginner' | 'intermediate' | 'advanced'
+  image?: ExerciseImage
+}
+
+export interface SessionData {
+  id: string
+  created_at: string
+  updated_at: string | null
+  started_at?: string
+  ended_at?: string | null
+  notes?: string | null
+  workout_id: string
+  status: 'planned' | 'in_progress' | 'done' | 'skipped'
+  scheduled_on: string
+  skip_reason?: string | null
+  sets: SessionDataSet[]
+}
+
 export interface ScheduleResult {
   program_id: string
   sessions_created: number
@@ -476,6 +508,10 @@ export function getSessions(
 
 export function getSessionById(id: string, locale: string) {
   return workoutApiFetch<WorkoutSession>(`/training/workout-sessions/${id}`, locale)
+}
+
+export function getSessionData(id: string, locale: string) {
+  return workoutApiFetch<SessionData>(`/training/workout-sessions/${id}/session-data`, locale)
 }
 
 export function startTrain(locale: string) {

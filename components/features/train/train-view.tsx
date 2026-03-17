@@ -3,20 +3,23 @@
 import { useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
+import Image from 'next/image'
 
 import { useTrainStore } from '@/lib/stores/train.store'
-import { useSession, useSessionSets, useFinishTrain } from '@/lib/hooks/use-sessions'
-import type { WorkoutSessionSet } from '@/lib/api/workout'
-import { useRouter } from '@/i18n/navigation'
+import { useSessionData, useFinishTrain } from '@/lib/hooks/use-sessions'
+import type { SessionDataSet } from '@/lib/api/workout'
+import { useRouter, Link } from '@/i18n/navigation'
 import { SetRow } from './set-row'
 
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty'
-import { Link } from '@/i18n/navigation'
+
+const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL ?? 'http://localhost:9000'
 
 function formatElapsed(seconds: number) {
   const h = Math.floor(seconds / 3600)
@@ -26,17 +29,24 @@ function formatElapsed(seconds: number) {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
+interface ExerciseGroup {
+  name: string
+  difficulty?: 'beginner' | 'intermediate' | 'advanced'
+  imageUrl?: string
+  sets: SessionDataSet[]
+}
+
 export function TrainView() {
   const t = useTranslations('train')
+  const te = useTranslations('exercises')
   const tc = useTranslations('common')
   const router = useRouter()
   const { sessionId, elapsedSeconds, startedAt, tickTimer, finishSession } = useTrainStore()
   const finishMutation = useFinishTrain()
 
-  const { data: session, isLoading: sessionLoading } = useSession(sessionId ?? '')
-  const { data: setsData, isLoading: setsLoading } = useSessionSets(sessionId ?? '')
+  const { data: sessionData, isLoading } = useSessionData(sessionId ?? '')
 
-  // Tick timer
+  // Sync + tick timer
   useEffect(() => {
     if (!sessionId) return
     if (startedAt) {
@@ -65,26 +75,26 @@ export function TrainView() {
     )
   }
 
-  const sets = setsData?.items ?? []
+  const sets = sessionData?.sets ?? []
 
-  // Group sets by exercise
-  const grouped = sets.reduce<
-    Record<string, { name: string; targetReps?: number; sets: WorkoutSessionSet[] }>
-  >((acc, set: WorkoutSessionSet) => {
-    const key = set.exercise_id
-    if (!acc[key]) {
-      acc[key] = {
-        name: set.exercise?.name ?? set.exercise_id,
-        targetReps: undefined,
+  const grouped = sets.reduce<Record<string, ExerciseGroup>>((acc, set) => {
+    if (!acc[set.exercise_id]) {
+      acc[set.exercise_id] = {
+        name: set.exercise_name,
+        difficulty: set.exercise_difficulty,
+        imageUrl: set.image
+          ? `${STORAGE_URL}/${set.image.bucket_name}/${set.image.storage_key}`
+          : undefined,
         sets: [],
       }
     }
-    acc[key].sets.push(set)
+    acc[set.exercise_id].sets.push(set)
     return acc
   }, {})
 
-  const doneSets = sets.filter((s: WorkoutSessionSet) => s.is_done).length
-  const allDone = sets.length > 0 && doneSets === sets.length
+  const doneSets = sets.filter((s) => s.is_done).length
+  const totalSets = sets.length
+  const allDone = totalSets > 0 && doneSets === totalSets
 
   async function handleFinish() {
     if (!sessionId) return
@@ -104,16 +114,18 @@ export function TrainView() {
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-0.5">
           <h1 className="text-2xl font-bold font-mono">{formatElapsed(elapsedSeconds)}</h1>
-          {session && <p className="text-sm text-muted-foreground">{session.workout?.name ?? ''}</p>}
+          {sessionData && (
+            <p className="text-sm text-muted-foreground">{sessionData.scheduled_on}</p>
+          )}
         </div>
         <div className="text-sm text-muted-foreground">
-          {t('setsProgress', { done: doneSets, total: sets.length })}
+          {t('setsProgress', { done: doneSets, total: totalSets })}
         </div>
       </div>
 
       <Separator />
 
-      {sessionLoading || setsLoading ? (
+      {isLoading ? (
         <div className="flex flex-col gap-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-20 w-full rounded-lg" />
@@ -124,14 +136,31 @@ export function TrainView() {
           <div className="flex flex-col gap-6 pb-28">
             {Object.entries(grouped).map(([exerciseId, group]) => (
               <div key={exerciseId} className="flex flex-col gap-2">
-                <h3 className="font-semibold">{group.name}</h3>
-                {group.sets.map((set: WorkoutSessionSet) => (
-                  <SetRow
-                    key={set.id}
-                    set={set}
-                    sessionId={sessionId}
-                    targetReps={group.targetReps}
-                  />
+                <div className="flex items-center gap-3">
+                  {group.imageUrl ? (
+                    <div className="relative size-12 shrink-0 overflow-hidden rounded-md">
+                      <Image
+                        src={group.imageUrl}
+                        alt={group.name}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  ) : (
+                    <div className="size-12 shrink-0 rounded-md bg-muted" />
+                  )}
+                  <div className="flex flex-col gap-1">
+                    <h3 className="font-semibold leading-tight">{group.name}</h3>
+                    {group.difficulty && (
+                      <Badge variant="secondary" className="w-fit text-xs">
+                        {te(`difficulty.${group.difficulty}`)}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+                {group.sets.map((set) => (
+                  <SetRow key={set.id} set={set} sessionId={sessionId} />
                 ))}
               </div>
             ))}

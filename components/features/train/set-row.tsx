@@ -6,7 +6,7 @@ import { CheckIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 import { useTrackSet } from '@/lib/hooks/use-sessions'
-import type { WorkoutSessionSet } from '@/lib/api/workout'
+import type { SessionDataSet } from '@/lib/api/workout'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,18 +14,17 @@ import { Badge } from '@/components/ui/badge'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 interface Props {
-  set: WorkoutSessionSet
+  set: SessionDataSet
   sessionId: string
-  targetReps?: number
 }
 
 const RPE_VALUES = ['6', '7', '8', '9', '10']
 
-export function SetRow({ set, sessionId, targetReps }: Props) {
+export function SetRow({ set, sessionId }: Props) {
   const t = useTranslations('train')
   const trackSet = useTrackSet()
   const [weight, setWeight] = useState(set.weight?.toString() ?? '')
-  const [reps, setReps] = useState(set.reps?.toString() ?? targetReps?.toString() ?? '')
+  const [reps, setReps] = useState(set.reps?.toString() ?? '')
   const [rpe, setRpe] = useState(set.rpe?.toString() ?? '')
   const [isDone, setIsDone] = useState(set.is_done)
 
@@ -94,7 +93,7 @@ export function SetRow({ set, sessionId, targetReps }: Props) {
             type="number"
             inputMode="numeric"
             min="0"
-            placeholder={targetReps ? String(targetReps) : t('reps')}
+            placeholder={t('reps')}
             value={reps}
             onChange={(e) => setReps(e.target.value)}
             onBlur={handleBlurSave}
