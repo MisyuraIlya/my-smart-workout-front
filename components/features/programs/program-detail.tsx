@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { PlusIcon, Trash2Icon, CalendarIcon, PencilIcon } from 'lucide-react'
 
-import { useProgramData, useGenerateSchedule, useUpdateProgram } from '@/lib/hooks/use-programs'
+import { useProgramData, useGenerateSchedule } from '@/lib/hooks/use-programs'
 import { useDeleteWorkout, useDeleteWorkoutExercise } from '@/lib/hooks/use-workouts'
 import type { ProgramWorkout } from '@/lib/api/workout'
 import { WorkoutForm } from './workout-form'
@@ -158,7 +158,6 @@ export function ProgramDetail({ programId }: Props) {
   const tc = useTranslations('common')
   const { data: program, isLoading } = useProgramData(programId)
   const generateSchedule = useGenerateSchedule()
-  const updateProgram = useUpdateProgram()
   const [addWorkoutDay, setAddWorkoutDay] = useState<number | null>(null)
   const [editOpen, setEditOpen] = useState(false)
 
@@ -179,7 +178,6 @@ export function ProgramDetail({ programId }: Props) {
   async function handleGenerateSchedule() {
     try {
       const result = await generateSchedule.mutateAsync(programId)
-      await updateProgram.mutateAsync({ id: programId, data: { status: 'active' } })
       toast.success(
         t('scheduleGenerated', {
           sessions: result.sessions_created,
