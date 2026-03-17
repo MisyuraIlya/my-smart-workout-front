@@ -53,7 +53,7 @@ export function useCreateWorkout() {
   const qc = useQueryClient()
   const locale = useLocale()
   return useMutation({
-    mutationFn: (data: { name: string; day_no: number; program_id: string }) =>
+    mutationFn: (data: { name: string; day_no: number; program_id: string; start_time?: string }) =>
       createWorkout(data, locale),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: workoutKeys.all })
@@ -71,7 +71,7 @@ export function useUpdateWorkout() {
       data,
     }: {
       id: string
-      data: { name?: string; day_no?: number; program_id?: string }
+      data: { name?: string; day_no?: number; program_id?: string; start_time?: string }
     }) => updateWorkout(id, data, locale),
     onSuccess: (_data, { id }) => {
       qc.invalidateQueries({ queryKey: workoutKeys.all })

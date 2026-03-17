@@ -196,6 +196,20 @@
 - [x] Fix Generate Schedule button making unwanted PUT request after POST schedule
   - `components/features/programs/program-detail.tsx` — removed `updateProgram.mutateAsync({ status: 'active' })` call that fired after schedule generation; backend `PUT /training/programs/{id}` requires `name` and was erroring with `"name is required"`; setting status to active post-schedule is not needed, so the entire second request was dropped
 
+- [x] Add calendar to sessions page — month view with session dot indicators, day filtering, and infinite-scroll fallback
+  - Installed `shadcn calendar` component (react-day-picker v9 + date-fns v4)
+  - `lib/hooks/use-sessions.ts` — added `useSessionsForMonth(from, to)` hook; fetches `GET /training/workout-sessions?from=...&to=...&limit=100` for the visible month; result cached per month by React Query
+  - `components/features/sessions/session-list.tsx` — added `showTitle` prop (defaults `true`) so the list title can be suppressed when embedded inside the calendar view
+  - `components/features/sessions/session-calendar.tsx` — new `SessionCalendarView` client component:
+    - Controlled month (`useState`) + controlled selected date (`useState`)
+    - `modifiers={{ hasSessions: sessionDates }}` marks days that have sessions; custom `DayButtonWithDot` renders a 6px dot inside each marked day (white when selected, primary color otherwise); date math uses local time (`new Date(y, m-1, d)`) to avoid UTC timezone shift against `scheduled_on` (YYYY-MM-DD)
+    - Clicking a day filters sessions in-memory from the already-fetched month data — no extra API request
+    - Day header shows formatted date + "Clear" button; navigating to another month clears the selection and re-fetches
+    - When no day is selected → falls back to `<SessionList showTitle={false} />` (existing infinite scroll)
+    - `date-fns/locale` objects (enUS / ru / he) passed to `Calendar` so month/weekday names render in the active locale
+  - `app/[locale]/(app)/sessions/page.tsx` — replaced `<SessionList />` with `<SessionCalendarView />`
+  - Added i18n keys `sessions.allSessions`, `sessions.clearDate`, `sessions.dayEmpty` to `en.json`, `ru.json`, `he.json`
+
 - [x] Add floating "Active Session" banner — return-to-train UX when navigating away from `/train`
   - `components/shared/active-session-banner.tsx` — fixed pill above the bottom nav (`bottom-16`); shows pulsing dot + "Session in progress" label + live elapsed timer; tapping navigates to `/train`; hidden when already on `/train`; only renders when `sessionId` is set in train store
   - Moved timer interval ownership from `TrainHero` to `ActiveSessionBanner` — `TrainHero` was clearing the interval on unmount (navigating away from dashboard stopped the timer); banner lives in the app layout so the interval now runs for the full duration of the session regardless of which page is active

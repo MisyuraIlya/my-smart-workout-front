@@ -35,15 +35,21 @@ export function WorkoutForm({ programId, dayNo, workout, onSuccess }: Props) {
       name: workout?.name ?? '',
       day_no: workout?.day_no ?? dayNo,
       program_id: programId,
+      start_time: workout?.start_time ?? '',
     },
   })
 
   async function onSubmit(data: WorkoutFormValues) {
     try {
+      // pass empty string to clear, undefined if untouched (never set)
+      const payload = {
+        ...data,
+        start_time: data.start_time || '',
+      }
       if (workout) {
-        await updateMutation.mutateAsync({ id: workout.id, data })
+        await updateMutation.mutateAsync({ id: workout.id, data: payload })
       } else {
-        await createMutation.mutateAsync(data)
+        await createMutation.mutateAsync(payload)
       }
       onSuccess()
     } catch (err) {
@@ -62,6 +68,21 @@ export function WorkoutForm({ programId, dayNo, workout, onSuccess }: Props) {
               <Field data-invalid={!!fieldState.error || undefined}>
                 <FieldLabel>{t('name')}</FieldLabel>
                 <Input {...field} placeholder={t('namePlaceholder')} aria-invalid={!!fieldState.error} />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="start_time"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={!!fieldState.error || undefined}>
+                <FieldLabel>{t('startTime')}</FieldLabel>
+                <Input
+                  {...field}
+                  type="time"
+                  aria-invalid={!!fieldState.error}
+                />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}

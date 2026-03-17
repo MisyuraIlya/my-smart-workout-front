@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { PlusIcon, Trash2Icon, CalendarIcon, PencilIcon } from 'lucide-react'
+import { PlusIcon, Trash2Icon, CalendarIcon, PencilIcon, ClockIcon } from 'lucide-react'
 
 import { useProgramData, useGenerateSchedule } from '@/lib/hooks/use-programs'
 import { useDeleteWorkout, useDeleteWorkoutExercise } from '@/lib/hooks/use-workouts'
@@ -50,7 +50,15 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
   return (
     <div className="flex flex-col gap-2 rounded-lg border bg-card p-4">
       <div className="flex items-center justify-between">
-        <span className="font-semibold">{workout.name}</span>
+        <div className="flex flex-col gap-0.5">
+          <span className="font-semibold">{workout.name}</span>
+          {workout.start_time && (
+            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <ClockIcon className="size-3" />
+              {workout.start_time}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-1">
           <Drawer open={editOpen} onOpenChange={setEditOpen}>
             <DrawerTrigger asChild>
@@ -75,6 +83,7 @@ function WorkoutCard({ workout, programId }: WorkoutCardProps) {
                       name: workout.name,
                       day_no: workout.day_no,
                       program_id: programId,
+                      start_time: workout.start_time,
                     }}
                     onSuccess={() => setEditOpen(false)}
                   />

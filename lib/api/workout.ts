@@ -73,6 +73,7 @@ export interface Workout {
   name: string
   day_no: 1 | 2 | 3 | 4 | 5 | 6 | 7
   program_id: string
+  start_time?: string // HH:MM, e.g. "07:30"
 }
 
 export interface WorkoutExercise {
@@ -237,6 +238,7 @@ export interface ProgramWorkout {
   updated_at: string | null
   name: string
   day_no: 1 | 2 | 3 | 4 | 5 | 6 | 7
+  start_time?: string // HH:MM
   exercises: ProgramWorkoutExercise[]
 }
 
@@ -419,7 +421,7 @@ export function getWorkoutById(id: string, locale: string) {
 }
 
 export function createWorkout(
-  data: { name: string; day_no: number; program_id: string },
+  data: { name: string; day_no: number; program_id: string; start_time?: string },
   locale: string,
 ) {
   return workoutApiFetch<Workout>('/training/workouts', locale, {
@@ -430,7 +432,7 @@ export function createWorkout(
 
 export function updateWorkout(
   id: string,
-  data: { name?: string; day_no?: number; program_id?: string },
+  data: { name?: string; day_no?: number; program_id?: string; start_time?: string },
   locale: string,
 ) {
   return workoutApiFetch<Workout>(`/training/workouts/${id}`, locale, {
