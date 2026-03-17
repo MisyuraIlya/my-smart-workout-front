@@ -161,6 +161,25 @@
   - `program-detail.tsx` — replaced `useProgram` + `useWorkouts` + per-workout `useWorkoutExercises` with single `useProgramData`; exercises passed as props, no child-level fetchers
   - `workout-exercise-item.tsx` — updated to `ProgramWorkoutExercise` type; now shows exercise thumbnail (Minio via `NEXT_PUBLIC_STORAGE_URL`) and difficulty badge
 
+- [x] Add search to Exercise Progress chart on dashboard — replaced static `useExercises({ limit: 100 })` with debounced (300ms) search input + `useExercises({ limit: 30, search })` so exercises are filtered server-side as you type
+  - `components/features/dashboard/exercise-progress-chart.tsx` — added `SearchIcon` input row below title; search and select sit side-by-side (`flex-1` input + fixed `w-36` select)
+
+- [x] Fix Upcoming Sessions showing only today — backend `GET /training/workout-sessions` had no WHERE clause and ignored `status`/`from`/`to` params entirely; added dedicated `/upcoming` endpoint
+  - `my-smart-workout/internal/adapter/postgres/workout_session.go` — `GetUpcomingWorkoutSessions`: queries `status IN ('planned','in_progress') AND scheduled_on BETWEEN $1 AND $2 ORDER BY scheduled_on ASC`
+  - `my-smart-workout/internal/usecase/workout_session.go` — `GetUpcoming` method + interface entry
+  - `my-smart-workout/internal/handler/workout_session.go` — `GetUpcomingWorkoutSessions` handler; parses `from`/`to`, defaults to today → +14 days
+  - `my-smart-workout/internal/handler/router.go` — `GET /workout-sessions/upcoming` registered before `/{id}`
+  - `my-smart-workout/api/http/app.yaml` — new path entry with `from`/`to` query params and `{ items: WorkoutSession[] }` response schema
+  - `lib/api/workout.ts` — `getUpcomingSessions(from, to, locale)`
+  - `lib/hooks/use-sessions.ts` — `useUpcomingSessions(from, to)` hook
+  - `components/features/dashboard/upcoming-sessions.tsx` — switched from `useSessions` to `useUpcomingSessions`
+
+- [x] Fix upcoming sessions dot never appearing — `scheduled_on` from API is RFC3339 (`"2025-03-18T00:00:00Z"`) but map was keyed by the full string while day strip uses `"YYYY-MM-DD"` keys; lookup always missed. Fixed by slicing to `.slice(0, 10)` when building `sessionsByDate`
+  - `components/features/dashboard/upcoming-sessions.tsx`
+
+- [x] Sessions list date format — `scheduled_on` now displayed as `DD-MM-YYYY` instead of raw `YYYY-MM-DD`
+  - `components/features/sessions/session-card.tsx` — string slice reshape (no `new Date()` to avoid timezone shift)
+
 ---
 
 ## Decisions
