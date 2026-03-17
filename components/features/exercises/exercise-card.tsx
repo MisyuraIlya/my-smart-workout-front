@@ -10,6 +10,7 @@ import { ExerciseForm } from './exercise-form'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import {
   AlertDialog,
@@ -39,15 +40,30 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
   const t = useTranslations('exercises')
   const tc = useTranslations('common')
   const [editOpen, setEditOpen] = useState(false)
+  const [imgOpen, setImgOpen] = useState(false)
 
   const imgUrl = exerciseImageUrl(exercise)
 
   return (
     <div className="flex items-center gap-3 rounded-lg border bg-card px-4 py-3">
       {imgUrl ? (
-        <div className="relative size-12 shrink-0 overflow-hidden rounded-md">
-          <Image src={imgUrl} alt={exercise.name} fill className="object-cover" unoptimized />
-        </div>
+        <>
+          <button
+            type="button"
+            onClick={() => setImgOpen(true)}
+            className="relative size-12 shrink-0 overflow-hidden rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Image src={imgUrl} alt={exercise.name} fill className="object-cover" unoptimized />
+          </button>
+          <Dialog open={imgOpen} onOpenChange={setImgOpen}>
+            <DialogContent className="max-w-sm p-2">
+              <DialogTitle className="sr-only">{exercise.name}</DialogTitle>
+              <div className="relative aspect-square w-full overflow-hidden rounded-md">
+                <Image src={imgUrl} alt={exercise.name} fill className="object-contain" unoptimized />
+              </div>
+            </DialogContent>
+          </Dialog>
+        </>
       ) : (
         <div className="size-12 shrink-0 rounded-md bg-muted" />
       )}
