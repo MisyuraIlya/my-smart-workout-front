@@ -114,10 +114,14 @@
       "intermediate": "בינוני",
       "advanced": "מתקדם"
     },
+    "popularity": {
+      "label": "פופולריות"
+    },
     "sets": "סטים",
     "targetReps": "חזרות יעד",
     "restSeconds": "מנוחה (שניות)",
-    "position": "מיקום"
+    "position": "מיקום",
+    "popularityAll": "הכל"
   },
   "muscles": {
     "title": "קבוצות שרירים",

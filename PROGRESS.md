@@ -223,6 +223,13 @@
   - Frontend `components/features/programs/program-detail.tsx` — `WorkoutCard` shows `ClockIcon + "HH:MM"` below workout name when set; passes `start_time` into edit form
   - i18n: `workouts.startTime` added to `en.json` (Start Time), `ru.json` (Время начала), `he.json` (שעת התחלה)
 
+- [x] Add popularity filter to exercises list page
+  - Backend: `GET /training/exercises?popularity=N` (1..5) — filter exercises by popularity score
+  - `lib/api/workout.ts` — added `popularity?: number` to `Exercise` interface; added `popularity` param to `getExercises` query string
+  - `lib/hooks/use-exercises.ts` — extracted `ExerciseFilterParams` type with `popularity?`; `useExercises` + `useInfiniteExercises` accept and key on `popularity`
+  - `components/features/exercises/exercise-list.tsx` — added `popularity` state; search input and popularity `Select` sit side-by-side; options: "All" (clears filter) + ★ through ★★★★★ for 1–5; changing popularity re-fetches from page 1 via React Query key change
+  - i18n: `exercises.popularityAll` added to `en.json` ("All"), `ru.json` ("Все"), `he.json` ("הכל")
+
 - [x] Add floating "Active Session" banner — return-to-train UX when navigating away from `/train`
   - `components/shared/active-session-banner.tsx` — fixed pill above the bottom nav (`bottom-16`); shows pulsing dot + "Session in progress" label + live elapsed timer; tapping navigates to `/train`; hidden when already on `/train`; only renders when `sessionId` is set in train store
   - Moved timer interval ownership from `TrainHero` to `ActiveSessionBanner` — `TrainHero` was clearing the interval on unmount (navigating away from dashboard stopped the timer); banner lives in the app layout so the interval now runs for the full duration of the session regardless of which page is active

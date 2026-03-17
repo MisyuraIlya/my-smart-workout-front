@@ -47,6 +47,7 @@ export function ExerciseForm({ exercise, onSuccess }: Props) {
       instructions: exercise?.instructions?.join('\n') ?? '',
       muscle_id: exercise?.muscle_id ?? '',
       difficulty: exercise?.difficulty ?? undefined,
+      popularity: exercise?.popularity ?? undefined,
     },
   })
 
@@ -124,6 +125,27 @@ export function ExerciseForm({ exercise, onSuccess }: Props) {
                   <ToggleGroupItem value="beginner">{t('difficulty.beginner')}</ToggleGroupItem>
                   <ToggleGroupItem value="intermediate">{t('difficulty.intermediate')}</ToggleGroupItem>
                   <ToggleGroupItem value="advanced">{t('difficulty.advanced')}</ToggleGroupItem>
+                </ToggleGroup>
+              </Field>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="popularity"
+            render={({ field }) => (
+              <Field>
+                <FieldLabel>{t('popularity.label')}</FieldLabel>
+                <ToggleGroup
+                  type="single"
+                  value={field.value !== undefined ? String(field.value) : ''}
+                  onValueChange={(v) => field.onChange(v ? Number(v) : undefined)}
+                  className="justify-start"
+                >
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <ToggleGroupItem key={n} value={String(n)}>
+                      {'★'.repeat(n)}
+                    </ToggleGroupItem>
+                  ))}
                 </ToggleGroup>
               </Field>
             )}

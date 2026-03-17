@@ -52,6 +52,7 @@ export interface Exercise {
   instructions: string[]
   difficulty?: 'beginner' | 'intermediate' | 'advanced'
   muscle_id: string
+  popularity?: number
   image?: ExerciseImage
 }
 
@@ -287,11 +288,11 @@ export function deleteMuscle(id: string, locale: string) {
 // ─── Exercises ───────────────────────────────────────────────────────────────
 
 export function getExercises(
-  params: PaginationParams & { muscle_id?: string },
+  params: PaginationParams & { muscle_id?: string; popularity?: number },
   locale: string,
 ) {
   return workoutApiFetch<PaginatedResponse<Exercise>>(
-    `/training/exercises${qs({ page: params.page ?? 1, limit: params.limit ?? 20, muscle_id: params.muscle_id, search: params.search })}`,
+    `/training/exercises${qs({ page: params.page ?? 1, limit: params.limit ?? 20, muscle_id: params.muscle_id, search: params.search, popularity: params.popularity })}`,
     locale,
   )
 }
@@ -307,6 +308,7 @@ export function createExercise(
     instructions?: string[]
     muscle_id: string
     difficulty?: 'beginner' | 'intermediate' | 'advanced'
+    popularity?: number
   },
   locale: string,
 ) {
@@ -324,6 +326,7 @@ export function updateExercise(
     instructions?: string[]
     muscle_id?: string
     difficulty?: 'beginner' | 'intermediate' | 'advanced'
+    popularity?: number
   },
   locale: string,
 ) {

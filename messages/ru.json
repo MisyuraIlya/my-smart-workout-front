@@ -114,10 +114,14 @@
       "intermediate": "Средний",
       "advanced": "Продвинутый"
     },
+    "popularity": {
+      "label": "Популярность"
+    },
     "sets": "Подходы",
     "targetReps": "Целевые повторения",
     "restSeconds": "Отдых (секунды)",
-    "position": "Позиция"
+    "position": "Позиция",
+    "popularityAll": "Все"
   },
   "muscles": {
     "title": "Группы мышц",

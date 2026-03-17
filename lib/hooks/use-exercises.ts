@@ -11,16 +11,18 @@ import {
   type PaginationParams,
 } from '@/lib/api/workout'
 
+type ExerciseFilterParams = PaginationParams & { muscle_id?: string; popularity?: number }
+
 export const exerciseKeys = {
   all: ['exercises'] as const,
-  list: (params: PaginationParams & { muscle_id?: string }) =>
+  list: (params: ExerciseFilterParams) =>
     [...exerciseKeys.all, 'list', params] as const,
-  infinite: (params: PaginationParams & { muscle_id?: string }) =>
+  infinite: (params: ExerciseFilterParams) =>
     [...exerciseKeys.all, 'infinite', params] as const,
   detail: (id: string) => [...exerciseKeys.all, 'detail', id] as const,
 }
 
-export function useExercises(params: PaginationParams & { muscle_id?: string } = {}) {
+export function useExercises(params: ExerciseFilterParams = {}) {
   const locale = useLocale()
   return useQuery({
     queryKey: exerciseKeys.list(params),
@@ -28,7 +30,7 @@ export function useExercises(params: PaginationParams & { muscle_id?: string } =
   })
 }
 
-export function useInfiniteExercises(params: Omit<PaginationParams, 'page'> & { muscle_id?: string } = {}) {
+export function useInfiniteExercises(params: Omit<ExerciseFilterParams, 'page'> = {}) {
   const locale = useLocale()
   return useInfiniteQuery({
     queryKey: exerciseKeys.infinite(params),
@@ -58,6 +60,7 @@ export function useCreateExercise() {
       instructions?: string[]
       muscle_id: string
       difficulty?: 'beginner' | 'intermediate' | 'advanced'
+      popularity?: number
     }) => createExercise(data, locale),
     onSuccess: () => qc.invalidateQueries({ queryKey: exerciseKeys.all }),
   })
@@ -78,6 +81,7 @@ export function useUpdateExercise() {
         instructions?: string[]
         muscle_id?: string
         difficulty?: 'beginner' | 'intermediate' | 'advanced'
+        popularity?: number
       }
     }) => updateExercise(id, data, locale),
     onSuccess: () => qc.invalidateQueries({ queryKey: exerciseKeys.all }),

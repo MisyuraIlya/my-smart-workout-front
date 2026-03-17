@@ -114,10 +114,14 @@
       "intermediate": "Intermediate",
       "advanced": "Advanced"
     },
+    "popularity": {
+      "label": "Popularity"
+    },
     "sets": "Sets",
     "targetReps": "Target Reps",
     "restSeconds": "Rest (seconds)",
-    "position": "Position"
+    "position": "Position",
+    "popularityAll": "All"
   },
   "muscles": {
     "title": "Muscle Groups",

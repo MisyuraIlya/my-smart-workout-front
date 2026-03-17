@@ -11,6 +11,7 @@ import { ExerciseCard } from './exercise-card'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription, EmptyContent } from '@/components/ui/empty'
@@ -22,13 +23,14 @@ export function ExerciseList() {
   const [createOpen, setCreateOpen] = useState(false)
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
+  const [popularity, setPopularity] = useState<number | undefined>(undefined)
   useEffect(() => {
     const timer = setTimeout(() => setSearch(searchInput), 300)
     return () => clearTimeout(timer)
   }, [searchInput])
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useInfiniteExercises({ search: search || undefined })
+    useInfiniteExercises({ search: search || undefined, popularity })
   const deleteMutation = useDeleteExercise()
 
   const items = data?.pages.flatMap((p) => p.items) ?? []
@@ -88,14 +90,34 @@ export function ExerciseList() {
         </Drawer>
       </div>
 
-      <div className="relative">
-        <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          className="pl-9"
-          placeholder={tc('search')}
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="pl-9"
+            placeholder={tc('search')}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </div>
+        <Select
+          value={popularity !== undefined ? String(popularity) : 'all'}
+          onValueChange={(v) => setPopularity(v === 'all' ? undefined : Number(v))}
+        >
+          <SelectTrigger className="w-32">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="all">{t('popularityAll')}</SelectItem>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <SelectItem key={n} value={String(n)}>
+                  {'★'.repeat(n)}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
       {isLoading ? (
