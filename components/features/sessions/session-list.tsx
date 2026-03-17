@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { useInfiniteSessions } from '@/lib/hooks/use-sessions'
@@ -12,34 +12,32 @@ import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/u
 
 export function SessionList() {
   const t = useTranslations('sessions')
-  const sentinelRef = useRef<HTMLDivElement>(null)
-
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteSessions({ limit: 20 })
 
   const items = data?.pages.flatMap((p) => p.items) ?? []
 
   const hasNextPageRef = useRef(hasNextPage)
-  const isFetchingRef = useRef(isFetchingNextPage)
   const fetchNextPageRef = useRef(fetchNextPage)
-  useEffect(() => { hasNextPageRef.current = hasNextPage }, [hasNextPage])
-  useEffect(() => { isFetchingRef.current = isFetchingNextPage }, [isFetchingNextPage])
-  useEffect(() => { fetchNextPageRef.current = fetchNextPage }, [fetchNextPage])
+  const fetchingRef = useRef(false)
+  hasNextPageRef.current = hasNextPage
+  fetchNextPageRef.current = fetchNextPage
+  useEffect(() => { if (!isFetchingNextPage) fetchingRef.current = false }, [isFetchingNextPage])
 
-  useEffect(() => {
-    const el = sentinelRef.current
+  const observerRef = useRef<IntersectionObserver | null>(null)
+  const sentinelRef = useCallback((el: HTMLDivElement | null) => {
+    if (observerRef.current) { observerRef.current.disconnect(); observerRef.current = null }
     if (!el) return
-    const observer = new IntersectionObserver(
+    observerRef.current = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasNextPageRef.current && !isFetchingRef.current) {
+        if (entries[0].isIntersecting && hasNextPageRef.current && !fetchingRef.current) {
+          fetchingRef.current = true
           fetchNextPageRef.current()
         }
       },
       { threshold: 0.1 },
     )
-    observer.observe(el)
-    return () => observer.disconnect()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    observerRef.current.observe(el)
   }, [])
 
   if (isLoading) {
