@@ -210,6 +210,19 @@
   - `app/[locale]/(app)/sessions/page.tsx` — replaced `<SessionList />` with `<SessionCalendarView />`
   - Added i18n keys `sessions.allSessions`, `sessions.clearDate`, `sessions.dayEmpty` to `en.json`, `ru.json`, `he.json`
 
+- [x] Add `start_time` field to workouts — intended start time (HH:MM) for each workout in a program
+  - DB: `ALTER TABLE workout ADD COLUMN start_time TIME` (nullable)
+  - Backend: `start_time *string` added to `domain.Workout`, `dto.WorkoutResponse`, `dto.CreateWorkoutRequest`, `dto.UpdateWorkoutRequest`, `dto.ProgramDataWorkoutResponse`
+  - Backend postgres: SELECT uses `TO_CHAR(start_time, 'HH24:MI')`, INSERT/UPDATE use `$N::TIME`; `GetProgramData` also returns `workout_start_time`
+  - Backend usecase: passes through on create; on update keeps existing value if not provided, clears if empty string sent
+  - `api/http/app.yaml` — `start_time` added to `CreateWorkoutInput` and `UpdateWorkoutInput` schemas
+  - Frontend `lib/api/workout.ts` — `start_time?` on `Workout` and `ProgramWorkout` types + API function signatures
+  - Frontend `lib/validations/workout.schema.ts` — `start_time` optional, `HH:MM` regex or empty string
+  - Frontend `lib/hooks/use-workouts.ts` — `start_time?` in `useCreateWorkout` / `useUpdateWorkout` mutation types
+  - Frontend `components/features/programs/workout-form.tsx` — `<Input type="time">` field; populates from existing value on edit
+  - Frontend `components/features/programs/program-detail.tsx` — `WorkoutCard` shows `ClockIcon + "HH:MM"` below workout name when set; passes `start_time` into edit form
+  - i18n: `workouts.startTime` added to `en.json` (Start Time), `ru.json` (Время начала), `he.json` (שעת התחלה)
+
 - [x] Add floating "Active Session" banner — return-to-train UX when navigating away from `/train`
   - `components/shared/active-session-banner.tsx` — fixed pill above the bottom nav (`bottom-16`); shows pulsing dot + "Session in progress" label + live elapsed timer; tapping navigates to `/train`; hidden when already on `/train`; only renders when `sessionId` is set in train store
   - Moved timer interval ownership from `TrainHero` to `ActiveSessionBanner` — `TrainHero` was clearing the interval on unmount (navigating away from dashboard stopped the timer); banner lives in the app layout so the interval now runs for the full duration of the session regardless of which page is active
