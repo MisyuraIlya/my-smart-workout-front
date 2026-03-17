@@ -193,6 +193,9 @@
 - [x] Add bottom padding to app layout so list content is not hidden behind fixed bottom navigation bar
   - `app/[locale]/(app)/layout.tsx` — wrapped `{children}` in `<div className="pb-20">` (80px clears the ~56px nav bar with breathing room); applies to all app pages automatically
 
+- [x] Fix Generate Schedule button making unwanted PUT request after POST schedule
+  - `components/features/programs/program-detail.tsx` — removed `updateProgram.mutateAsync({ status: 'active' })` call that fired after schedule generation; backend `PUT /training/programs/{id}` requires `name` and was erroring with `"name is required"`; setting status to active post-schedule is not needed, so the entire second request was dropped
+
 ---
 
 ## Decisions
