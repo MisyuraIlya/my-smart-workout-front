@@ -110,6 +110,13 @@
   - `app/[locale]/(app)/train/page.tsx` — replaced `py-6 pb-32` with `pt-6 h-[calc(100dvh-3.5rem)] overflow-hidden` to constrain page to viewport, no overflow
   - `components/features/train/train-view.tsx` — outer div gets `h-full`; `ScrollArea` changed from `h-[calc(100vh-16rem)]` to `flex-1 min-h-0` (fills remaining space via flex); inner content padding moved to `pb-28` so last set clears the fixed Finish button
 
+- [x] PWA support — installable, offline-capable mobile app
+  - `app/manifest.ts` — Next.js native Web App Manifest (name, icons, display: standalone, orientation, shortcuts)
+  - `public/icons/icon.svg` + `icon-maskable.svg` — dumbbell SVG icons (`any` + `maskable` purpose)
+  - `public/sw.js` — custom service worker: cache-first for `/_next/static/**` + public assets; network-first with cached fallback for navigation; network-only for API ports 4000/4001
+  - `components/shared/pwa-register.tsx` — client component that registers `/sw.js` on mount
+  - `app/layout.tsx` — `Viewport` export (`themeColor` light/dark, `userScalable: false`); `appleWebApp` metadata; `<PwaRegister />` in body
+
 ## In Progress
 
 - [x] Add Exercises tab to bottom navigation bar
