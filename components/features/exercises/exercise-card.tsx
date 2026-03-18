@@ -41,18 +41,26 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
   const t = useTranslations('exercises')
   const tc = useTranslations('common')
   const [editOpen, setEditOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
   const [imgOpen, setImgOpen] = useState(false)
   const [detailOpen, setDetailOpen] = useState(false)
 
   const imgUrl = exerciseImageUrl(exercise)
+
+  function openDetail() {
+    if (editOpen || deleteOpen || imgOpen) return
+    setDetailOpen(true)
+  }
 
   return (
     <>
       <div
         role="button"
         tabIndex={0}
-        onClick={() => setDetailOpen(true)}
-        onKeyDown={(e) => e.key === 'Enter' && setDetailOpen(true)}
+        onClick={openDetail}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') openDetail()
+        }}
         className="flex cursor-pointer items-center gap-3 rounded-lg border bg-card px-4 py-3"
       >
         {imgUrl ? (
@@ -103,7 +111,7 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
             </DrawerContent>
           </Drawer>
 
-          <AlertDialog>
+          <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
                 <Trash2Icon />
