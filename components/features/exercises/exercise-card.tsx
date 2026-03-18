@@ -55,43 +55,47 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
   return (
     <>
       <div
-        role="button"
-        tabIndex={0}
-        onClick={openDetail}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') openDetail()
-        }}
         className="flex cursor-pointer items-center gap-3 rounded-lg border bg-card px-4 py-3"
       >
-        {imgUrl ? (
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); setImgOpen(true) }}
-            className="relative size-12 shrink-0 overflow-hidden rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <Image src={imgUrl} alt={exercise.name} fill className="object-cover" unoptimized />
-          </button>
-        ) : (
-          <div className="size-12 shrink-0 rounded-md bg-muted" />
-        )}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={openDetail}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') openDetail()
+          }}
+          className="flex min-w-0 flex-1 items-center gap-3"
+        >
+          {imgUrl ? (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setImgOpen(true) }}
+              className="relative size-12 shrink-0 overflow-hidden rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Image src={imgUrl} alt={exercise.name} fill className="object-cover" unoptimized />
+            </button>
+          ) : (
+            <div className="size-12 shrink-0 rounded-md bg-muted" />
+          )}
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <span className="truncate font-medium">{exercise.name}</span>
-          <div className="mt-1 flex flex-wrap items-center gap-1.5">
-            {exercise.difficulty && (
-              <Badge variant="secondary" className="w-fit">
-                {t(`difficulty.${exercise.difficulty}`)}
-              </Badge>
-            )}
-            {exercise.popularity && (
-              <span className="text-xs text-muted-foreground">
-                {'★'.repeat(exercise.popularity)}
-              </span>
-            )}
+          <div className="flex min-w-0 flex-1 flex-col">
+            <span className="truncate font-medium">{exercise.name}</span>
+            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+              {exercise.difficulty && (
+                <Badge variant="secondary" className="w-fit">
+                  {t(`difficulty.${exercise.difficulty}`)}
+                </Badge>
+              )}
+              {exercise.popularity && (
+                <span className="text-xs text-muted-foreground">
+                  {'★'.repeat(exercise.popularity)}
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 pl-2">
           <Drawer open={editOpen} onOpenChange={setEditOpen}>
             <DrawerTrigger asChild>
               <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
