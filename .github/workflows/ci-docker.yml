@@ -1,0 +1,112 @@
+name: CI Docker
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docker-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.event_name == 'pull_request'
+    name: Build Image (PR)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: local/my-smart-workout-front
+          tags: |
+            type=ref,event=pr
+            type=sha
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_WORKOUT_API_URL=${{ vars.NEXT_PUBLIC_WORKOUT_API_URL || 'https://workout-api.example.invalid' }}
+            NEXT_PUBLIC_AUTH_API_URL=${{ vars.NEXT_PUBLIC_AUTH_API_URL || 'https://auth-api.example.invalid' }}
+            NEXT_PUBLIC_STORAGE_URL=${{ vars.NEXT_PUBLIC_STORAGE_URL || 'https://storage.example.invalid' }}
+
+  publish:
+    if: github.event_name == 'push'
+    name: Publish Image (Docker Hub)
+    runs-on: ubuntu-latest
+    environment: docker-publish
+    env:
+      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+      NEXT_PUBLIC_WORKOUT_API_URL: ${{ vars.NEXT_PUBLIC_WORKOUT_API_URL || secrets.NEXT_PUBLIC_WORKOUT_API_URL }}
+      NEXT_PUBLIC_AUTH_API_URL: ${{ vars.NEXT_PUBLIC_AUTH_API_URL || secrets.NEXT_PUBLIC_AUTH_API_URL }}
+      NEXT_PUBLIC_STORAGE_URL: ${{ vars.NEXT_PUBLIC_STORAGE_URL || secrets.NEXT_PUBLIC_STORAGE_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Validate Docker Hub and build args config
+        run: |
+          test -n "$DOCKERHUB_USERNAME"
+          test -n "${{ secrets.DOCKERHUB_TOKEN }}"
+          test -n "$NEXT_PUBLIC_WORKOUT_API_URL"
+          test -n "$NEXT_PUBLIC_AUTH_API_URL"
+          test -n "$NEXT_PUBLIC_STORAGE_URL"
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: docker.io/${{ env.DOCKERHUB_USERNAME }}/my-smart-workout-front
+          tags: |
+            type=sha
+            type=ref,event=branch
+            type=ref,event=tag
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_WORKOUT_API_URL=${{ env.NEXT_PUBLIC_WORKOUT_API_URL }}
+            NEXT_PUBLIC_AUTH_API_URL=${{ env.NEXT_PUBLIC_AUTH_API_URL }}
+            NEXT_PUBLIC_STORAGE_URL=${{ env.NEXT_PUBLIC_STORAGE_URL }}
