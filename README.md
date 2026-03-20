@@ -2,6 +2,24 @@
 
 This is a Next.js template with shadcn/ui.
 
+## Environment builds
+
+Use `.env.local` only for local development.
+
+For production build values:
+
+```bash
+cp .env.production.example .env.production
+# edit .env.production with real production URLs
+make build-prod
+```
+
+For Docker image builds from the same env file:
+
+```bash
+make docker-build-prod
+```
+
 ## Adding components
 
 To add components to your app, run the following command:
