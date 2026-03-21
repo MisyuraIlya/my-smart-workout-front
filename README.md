@@ -51,3 +51,5 @@ we work on the app my-smart-workout-front/**
 Read my-smart-workout-front/CLAUDE.md and my-smart-workout-front/PROGRESS.md
 i use skills my-smart-workout-front/.agents/skills/**
 `
+
+# PRODUCTION BUILD WITH CI CD
