@@ -86,6 +86,7 @@ jobs:
           images: docker.io/${{ env.DOCKERHUB_USERNAME }}/my-smart-workout-front
           tags: |
             type=sha
+            type=raw,value=sha-${{ github.sha }}
             type=ref,event=branch
             type=ref,event=tag
             type=raw,value=latest,enable={{is_default_branch}}
@@ -110,3 +111,77 @@ jobs:
             NEXT_PUBLIC_WORKOUT_API_URL=${{ env.NEXT_PUBLIC_WORKOUT_API_URL }}
             NEXT_PUBLIC_AUTH_API_URL=${{ env.NEXT_PUBLIC_AUTH_API_URL }}
             NEXT_PUBLIC_STORAGE_URL=${{ env.NEXT_PUBLIC_STORAGE_URL }}
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: publish
+    name: Deploy To Production (Helm Over SSH)
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
+      SSH_HOST: ${{ vars.SSH_HOST || secrets.SSH_HOST }}
+      SSH_PORT: ${{ vars.SSH_PORT || secrets.SSH_PORT || '2222' }}
+      SSH_USER: ${{ vars.SSH_USER || secrets.SSH_USER }}
+      INFRA_DIR: ${{ vars.INFRA_DIR || 'my-infra' }}
+      HELM_RELEASE: ${{ vars.HELM_RELEASE || 'smart' }}
+      K8S_NAMESPACE: ${{ vars.K8S_NAMESPACE || 'prod' }}
+    steps:
+      - name: Validate deploy config
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          test -n "$DOCKERHUB_USERNAME"
+          test -n "$SSH_HOST"
+          test -n "$SSH_PORT"
+          test -n "$SSH_USER"
+          test -n "$INFRA_DIR"
+          test -n "$HELM_RELEASE"
+          test -n "$K8S_NAMESPACE"
+          test -n "$SSH_PRIVATE_KEY"
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Deploy frontend image
+        env:
+          IMAGE_TAG: sha-${{ github.sha }}
+        run: |
+          IMAGE="docker.io/${DOCKERHUB_USERNAME}/my-smart-workout-front:${IMAGE_TAG}"
+          ssh -p "$SSH_PORT" "${SSH_USER}@${SSH_HOST}" \
+            "INFRA_DIR='${INFRA_DIR}' HELM_RELEASE='${HELM_RELEASE}' K8S_NAMESPACE='${K8S_NAMESPACE}' IMAGE='${IMAGE}' bash -se" <<'EOF'
+          set -euo pipefail
+
+          if [ -d "$INFRA_DIR/.git" ]; then
+            cd "$INFRA_DIR"
+          elif [ -d "$HOME/$INFRA_DIR/.git" ]; then
+            cd "$HOME/$INFRA_DIR"
+          else
+            echo "Infra repository not found: $INFRA_DIR (or $HOME/$INFRA_DIR)"
+            exit 1
+          fi
+
+          git pull --ff-only origin main
+
+          if ! helm status "$HELM_RELEASE" -n "$K8S_NAMESPACE" >/dev/null 2>&1; then
+            echo "Helm release '$HELM_RELEASE' in namespace '$K8S_NAMESPACE' was not found."
+            echo "Install the release once manually, then rerun CD."
+            exit 1
+          fi
+
+          helm upgrade "$HELM_RELEASE" ./helm \
+            --namespace "$K8S_NAMESPACE" \
+            --reuse-values \
+            --set "workoutFront.image=$IMAGE"
+
+          kubectl rollout status deployment/workout-front-deployment \
+            --namespace "$K8S_NAMESPACE" \
+            --timeout=240s
+          EOF
