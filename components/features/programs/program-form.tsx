@@ -15,6 +15,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { Form, FormField } from '@/components/ui/form'
 import { Field, FieldGroup, FieldLabel, FieldError } from '@/components/ui/field'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { DatePicker } from '@/components/ui/date-picker'
 
 const STATUS_INT_TO_STR: Record<number, string> = {
   0: 'inactive',
@@ -121,7 +122,7 @@ export function ProgramForm({ program, onSuccess }: Props) {
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error || undefined}>
                 <FieldLabel>{t('startsOn')}</FieldLabel>
-                <Input {...field} type="date" aria-invalid={!!fieldState.error} />
+                <DatePicker value={field.value} onChange={field.onChange} aria-invalid={!!fieldState.error} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -132,7 +133,7 @@ export function ProgramForm({ program, onSuccess }: Props) {
             render={({ field, fieldState }) => (
               <Field data-invalid={!!fieldState.error || undefined}>
                 <FieldLabel>{t('endsOn')}</FieldLabel>
-                <Input {...field} type="date" aria-invalid={!!fieldState.error} />
+                <DatePicker value={field.value} onChange={field.onChange} aria-invalid={!!fieldState.error} />
                 {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
