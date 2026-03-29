@@ -215,6 +215,21 @@ export interface SessionData {
   sets: SessionDataSet[]
 }
 
+export type CardioType = 'run' | 'swim' | 'spinning'
+
+export interface CardioEntry {
+  id: string
+  created_at: string
+  updated_at?: string | null
+  user_id: string
+  type: CardioType
+  started_at: string
+  ended_at?: string | null
+  duration_seconds: number
+  calories?: number | null
+  distance_km?: number | null
+}
+
 export interface ScheduleResult {
   program_id: string
   sessions_created: number
@@ -578,6 +593,41 @@ export function trackSet(
       body: JSON.stringify(data),
     },
   )
+}
+
+// ─── Cardio ──────────────────────────────────────────────────────────────────
+
+export function getCardioEntries(params: PaginationParams, locale: string) {
+  return workoutApiFetch<PaginatedResponse<CardioEntry>>(
+    `/training/cardio${qs({ page: params.page ?? 1, limit: params.limit ?? 20 })}`,
+    locale,
+  )
+}
+
+export async function getActiveCardio(locale: string): Promise<CardioEntry | null> {
+  const result = await workoutApiFetch<CardioEntry | undefined>('/training/cardio/active', locale)
+  return result ?? null
+}
+
+export function startCardio(data: { type: CardioType }, locale: string) {
+  return workoutApiFetch<CardioEntry>('/training/cardio/start', locale, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export function finishCardio(
+  id: string,
+  data: {
+    calories?: number
+    distance_km?: number
+  },
+  locale: string,
+) {
+  return workoutApiFetch<CardioEntry>(`/training/cardio/${id}/finish`, locale, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
 }
 
 // ─── Statistics ───────────────────────────────────────────────────────────────

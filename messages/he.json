@@ -31,6 +31,7 @@
   },
   "nav": {
     "dashboard": "ראשי",
+    "cardio": "קרדיו",
     "programs": "תוכניות",
     "exercises": "תרגילים",
     "muscles": "שרירים",
@@ -166,6 +167,33 @@
     "noActiveSession": "אין אימון פעיל",
     "noActiveSessionDescription": "התחל אימון מדף הבית.",
     "sessionComplete": "האימון הושלם!"
+  },
+  "cardio": {
+    "title": "קרדיו",
+    "description": "מעקב זמן, קלוריות ומרחק לסשני הקרדיו שלך.",
+    "chooseType": "בחר סוג קרדיו",
+    "start": "התחל קרדיו",
+    "finish": "סיים קרדיו",
+    "timer": "טיימר",
+    "activeNow": "בתהליך",
+    "calories": "קלוריות (בקירוב)",
+    "distanceKm": "מרחק (ק\"מ)",
+    "history": "סשני קרדיו אחרונים",
+    "emptyTitle": "עדיין אין סשני קרדיו",
+    "emptyDescription": "התחל סשן קרדיו ראשון כדי לראות כאן היסטוריה.",
+    "startedAt": "התחלה",
+    "kcal": "קק\"ל",
+    "km": "ק\"מ",
+    "started": "הקרדיו התחיל",
+    "finished": "הקרדיו הסתיים",
+    "startFailed": "נכשל בהתחלת קרדיו",
+    "finishFailed": "נכשל בסיום קרדיו",
+    "invalidMetric": "קלוריות ומרחק חייבים להיות מספרים לא שליליים",
+    "type": {
+      "run": "ריצה",
+      "swim": "שחייה",
+      "spinning": "ספינינג"
+    }
   },
   "statistics": {
     "title": "סטטיסטיקה",

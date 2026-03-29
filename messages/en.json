@@ -31,6 +31,7 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "cardio": "Cardio",
     "programs": "Programs",
     "exercises": "Exercises",
     "muscles": "Muscles",
@@ -166,6 +167,33 @@
     "noActiveSession": "No active session",
     "noActiveSessionDescription": "Start a training session from the dashboard.",
     "sessionComplete": "Session complete!"
+  },
+  "cardio": {
+    "title": "Cardio",
+    "description": "Track time, calories and distance for your cardio sessions.",
+    "chooseType": "Choose cardio type",
+    "start": "Start Cardio",
+    "finish": "Finish Cardio",
+    "timer": "Timer",
+    "activeNow": "In progress",
+    "calories": "Calories (approx.)",
+    "distanceKm": "Distance (km)",
+    "history": "Recent Cardio Sessions",
+    "emptyTitle": "No cardio sessions yet",
+    "emptyDescription": "Start your first cardio session to see history here.",
+    "startedAt": "Started",
+    "kcal": "kcal",
+    "km": "km",
+    "started": "Cardio started",
+    "finished": "Cardio finished",
+    "startFailed": "Failed to start cardio",
+    "finishFailed": "Failed to finish cardio",
+    "invalidMetric": "Calories and distance must be non-negative numbers",
+    "type": {
+      "run": "Run",
+      "swim": "Swim",
+      "spinning": "Spinning"
+    }
   },
   "statistics": {
     "title": "Statistics",
